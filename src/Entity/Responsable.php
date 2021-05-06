@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\DemandeIntervention;
 use App\Repository\ResponsableRepository;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=ResponsableRepository::class)

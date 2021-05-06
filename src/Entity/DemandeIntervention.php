@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\DemandeInterventionRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Responsable;
 use App\DBAL\Types\Priorite;
+use Doctrine\ORM\Mapping as ORM;
 use App\DBAL\Types\DepartementType;
 use App\DBAL\Types\CauseDefaillanceType;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use App\Repository\DemandeInterventionRepository;
 use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 
 /**
@@ -44,7 +45,7 @@ class DemandeIntervention
     private $fonction;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Responsable::class, mappedBy="demandeInterventions")
+     * @ORM\ManyToMany(targetEntity=Responsable::class, mappedBy="demandeInterventionsSuivies")
      */
     private $responsables;
 
@@ -72,10 +73,10 @@ class DemandeIntervention
     private $department;
 
     /**
-     * @ORM\Column(name="causeDeffaillance", type="CauseDefaillanceType", nullable=false)
+     * @ORM\Column(name="causeDefaillance", type="CauseDefaillanceType", nullable=false)
      * @DoctrineAssert\Enum(entity="App\DBAL\Types\CauseDefaillanceType")
      */
-    private $causeDeffaillance;
+    private $causeDefaillance;
 
     public function __construct()
     {
@@ -163,18 +164,18 @@ class DemandeIntervention
     /**
      * @return mixed
      */
-    public function getCauseDeffaillance()
+    public function getCauseDefaillance()
     {
-        return $this->causeDeffaillance;
+        return $this->causeDefaillance;
     }
 
     /**
-     * @param mixed $causeDeffaillance
+     * @param mixed $causeDefaillance
      * @return DemandeIntervention
      */
-    public function setCauseDeffaillance($causeDeffaillance)
+    public function setCauseDefaillance($causeDefaillance)
     {
-        $this->causeDeffaillance = $causeDeffaillance;
+        $this->causeDefaillance = $causeDefaillance;
         return $this;
     }
 
