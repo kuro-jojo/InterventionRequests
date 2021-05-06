@@ -6,6 +6,10 @@ use App\Repository\DemandeInterventionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\DBAL\Types\Priorite;
+use App\DBAL\Types\DepartementType;
+use App\DBAL\Types\CauseDefaillanceType;
+use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 
 /**
  * @ORM\Entity(repositoryClass=DemandeInterventionRepository::class)
@@ -55,6 +59,24 @@ class DemandeIntervention
      */
     private $traiteursDemande;
 
+    /**
+     * @ORM\Column(name="priorite", type="Priorite", nullable=false)
+     * @DoctrineAssert\Enum(entity="App\DBAL\Types\Priorite")
+     */
+    private $priorite;
+
+    /**
+     * @ORM\Column(name="department", type="DepartementType", nullable=false)
+     * @DoctrineAssert\Enum(entity="App\DBAL\Types\DepartementType")
+     */
+    private $department;
+
+    /**
+     * @ORM\Column(name="causeDeffaillance", type="CauseDefaillanceType", nullable=false)
+     * @DoctrineAssert\Enum(entity="App\DBAL\Types\CauseDefaillanceType")
+     */
+    private $causeDeffaillance;
+
     public function __construct()
     {
         $this->responsables = new ArrayCollection();
@@ -101,6 +123,62 @@ class DemandeIntervention
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPriorite()
+    {
+        return $this->priorite;
+    }
+
+    /**
+     * @param mixed $priorite
+     * @return DemandeIntervention
+     */
+    public function setPriorite($priorite)
+    {
+        $this->priorite = $priorite;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param mixed $department
+     * @return DemandeIntervention
+     */
+    public function setDepartment($department)
+    {
+        $this->department = $department;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCauseDeffaillance()
+    {
+        return $this->causeDeffaillance;
+    }
+
+    /**
+     * @param mixed $causeDeffaillance
+     * @return DemandeIntervention
+     */
+    public function setCauseDeffaillance($causeDeffaillance)
+    {
+        $this->causeDeffaillance = $causeDeffaillance;
+        return $this;
+    }
+
+
 
     public function getFonction(): ?string
     {
