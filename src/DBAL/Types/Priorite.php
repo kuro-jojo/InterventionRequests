@@ -10,9 +10,9 @@ final class Priorite extends AbstractEnumType
     public const PasUrgent = 'PasUrgent';
 
     protected static $choices = [
-        self::Urgent => 'Urgent',
-        self::PeuUrgent => 'PeuUrgent',
-        self::PasUrgent => 'PasUrgent'
+        self::Urgent => 'Elle est urgente',
+        self::PeuUrgent => 'Elle est peu urgente',
+        self::PasUrgent => 'Elle n\'est pas urgente'
     ];
 
 }

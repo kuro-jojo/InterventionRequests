@@ -23,7 +23,7 @@ class DemandeInterventionType extends AbstractType
         return array_merge([
             'label' => $label,
             'attr' => [
-                'placeholder' => $placeholder
+                'placeholder' => $placeholder,
             ]
         ], $options);
     }
@@ -31,31 +31,46 @@ class DemandeInterventionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nomDemandeur', TextType::class, $this->getConfiguration('Démandeur', ''))
-            ->add('emailDemandeur', TextType::class, $this->getConfiguration('Email', ''))
-            ->add('contactDemandeur', TextType::class, $this->getConfiguration('Contact', 'Votre numéro'))
+            ->add('nomDemandeur', TextType::class, $this->getConfiguration('Demandeur', ''))
+            ->add('emailDemandeur', TextType::class, $this->getConfiguration('Email', 'toto@example.com'))
+            ->add('contactDemandeur', TextType::class, $this->getConfiguration('Contact', '(00221) 77 XXX XX XX'))
             ->add('fonction', TextType::class, $this->getConfiguration('Fonction', ''))
             ->add('priorite', ChoiceType::class, $this->getConfiguration('Priorité', '', [
                 'choices' => Priorite::getChoices(),
+                'attr'=>[
+                    'class'=>'form-select'
+                ]
             ]))
-            ->add('department', ChoiceType::class, $this->getConfiguration('department', '', [
+            ->add('departement', ChoiceType::class, $this->getConfiguration('department', '', [
                 'choices' => DepartementType::getChoices(),
+                'attr'=>[
+                    'class'=>'form-select'
+                ]
             ]))
             ->add('causeDefaillance', ChoiceType::class, $this->getConfiguration('Cause défaillance', '', [
                 'choices' => CauseDefaillanceType::getChoices(),
+                'attr'=>[
+                    'class'=>'form-select'
+                ],
+                'help'=>'Si connue, indiquer la cause la défaillance'
             ]))
             ->add('poleConcerne', EntityType::class, $this->getConfiguration('Type de défaillance', '', [
                 'class' => Pole::class,
                 'choice_label' => 'nomPole',
                 'multiple' => false,
-            ]))
-        ;
+                'attr'=>[
+                    'class'=>'form-select'
+                ]
+            ]));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => DemandeIntervention::class,
+            'data_class' => DemandeIntervention::class, 
+            'attr' => [
+                'novalidate' => 'novalidate'
+            ]
         ]);
     }
 }

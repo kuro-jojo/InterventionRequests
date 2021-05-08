@@ -1,13 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Demande Intervention{% endblock %}
-
-{% block body %}
-    <div class="container">
-        <h1>Demande d'intervention</h1>
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit" class="btn btn-success">Demander</button>
-        {{ form_end(form) }}
-    </div>
+{% block title %}Demande Intervention
 {% endblock %}
+{% block stylesheets %}
+	{{parent()}}
+	<style>
+		body {
+			background-color: #edeef0;
+		}
+	</style>
+{% endblock %}
+{% block body %}
+	<div class="container-contact100">
+		<div class="wrap-contact100 pt-1">
+			{{ form_start(form,{
+            'attr' : {
+            }
+        }) }}
+			<div class="mb-3">
+				<img src="{{asset('img/ucad.jpg')}}" alt="Logo ucad" style="width:200px">
+			</div>
+			<span class="contact100-form-title">
+				Demande d'intervention
+			</span>
+			<span class="text-center d-block">Déclarez toute irrégularité au sein de l'<b>Ecole Supérieure Polytechnique de Dakar</b> auprès du service de maintenance</span>
+			<span class="text-danger d-block" style="margin:4%">Obligatoire *
+			</span>
+			<div class="row">
+				<div class="col-md-6">
+					<label for="demande_intervention_nomDemandeur" class="form-label">Nom du demandeur<span class="text-danger">
+							*</span>
+					</label>
+
+					{{form_widget(form.nomDemandeur)}}
+					{{form_errors(form.nomDemandeur)}}
+				</div>
+				<div class="col-md-6">
+					<label for="demande_intervention_contactDemandeur" class="form-label">Contact<span class="text-danger">
+							*</span>
+					</label>
+
+					{{form_widget(form.contactDemandeur)}}
+					{{form_errors(form.contactDemandeur)}}
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-md-6">
+					<label for="demande_intervention_emailDemandeur" class="form-label">Adresse email</label>
+
+					{{form_widget(form.emailDemandeur)}}
+					{{form_errors(form.emailDemandeur)}}
+				</div>
+				<div class="col-md-6">
+					<label for="demande_intervention_fonction" class="form-label">Fonction<span class="text-danger">
+							*</span>
+					</label>
+
+					{{form_widget(form.fonction)}}
+					{{form_errors(form.fonction)}}
+				</div>
+			</div>
+
+			<div class="mt-3">
+
+				<label for="demande_intervention_poleConcerne" class="form-label">Le type de defaillance<span class="text-danger">
+						*</span>
+				</label>
+				{{form_widget(form.poleConcerne)}}
+				{{form_errors(form.poleConcerne)}}
+			</div>
+			<div class="mt-3">
+
+				<label for="demande_intervention_causeDefaillance" class="form-label">La cause de la  defaillance</label>
+				<br>
+				{{form_help(form.causeDefaillance)}}
+				{{form_widget(form.causeDefaillance)}}
+				{{form_errors(form.causeDefaillance)}}
+			</div>
+			<div class="mt-3">
+
+				<label for="demande_intervention_priorite" class="form-label">Quelle est l'urgence de votre demande ?<span class="text-danger">
+						*</span>
+				</label>
+				{{form_widget(form.priorite)}}
+				{{form_errors(form.priorite)}}
+			</div>
+			<div class="mt-3">
+
+				<label for="demande_intervention_departement" class="form-label">Département ou service<span class="text-danger">
+						*</span>
+				</label>
+				{{form_widget(form.departement)}}
+				{{form_errors(form.departement)}}
+			</div>
+            <div class="mt-5 d-grid gap-2 col-6 mx-auto">
+			<button type="submit" class="btn btn-outline-primary">Envoyer la demande</button>
+            </div>
+			{{ form_end(form) }}
+		</div>
+	{% endblock %}

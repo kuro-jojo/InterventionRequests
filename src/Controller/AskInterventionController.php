@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AskInterventionController extends AbstractController
 {
     /**
-     * @Route("/demandeIntervention", name="demande_inter")
+     * @Route("/intervention/ask", name="app_ask_intervention")
      * @param Request $request
      * @return Response
      */
@@ -30,11 +30,11 @@ class AskInterventionController extends AbstractController
             $em->persist($demande);
             $em->flush();
 
+            // $flashy->info("Votre demande a bien été envoyée !");
             return $this->redirectToRoute('app_login');
 
         }
         return $this->render('ask_intervention/index.html.twig', [
-            'controller_name' => 'AskInterventionController',
             'form' => $form->createView(),
         ]);
     }
