@@ -6,6 +6,7 @@ use App\Entity\DemandeIntervention;
 use App\Form\DemandeInterventionType;
 use App\Repository\DemandeInterventionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use MercurySeries\FlashyBundle\FlashyNotifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
