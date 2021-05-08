@@ -23,7 +23,8 @@
 			<span class="contact100-form-title">
 				Demande d'intervention
 			</span>
-			<span class="text-center d-block">Déclarez toute irrégularité au sein de l'<b>Ecole Supérieure Polytechnique de Dakar</b> auprès du service de maintenance</span>
+			<span class="text-center d-block">Déclarez toute irrégularité au sein de l'<b>Ecole Supérieure Polytechnique de Dakar</b>
+				auprès du service de maintenance</span>
 			<span class="text-danger d-block" style="margin:4%">Obligatoire *
 			</span>
 			<div class="row">
@@ -85,6 +86,14 @@
 				{{form_widget(form.priorite)}}
 				{{form_errors(form.priorite)}}
 			</div>
+
+			<div class="mt-3">
+
+				<label for="demande_intervention_description" class="form-label">Description de la demande</label>
+				{{form_widget(form.description)}}
+				{{form_errors(form.description)}}
+			</div>
+
 			<div class="mt-3">
 
 				<label for="demande_intervention_departement" class="form-label">Département ou service<span class="text-danger">
@@ -93,9 +102,9 @@
 				{{form_widget(form.departement)}}
 				{{form_errors(form.departement)}}
 			</div>
-            <div class="mt-5 d-grid gap-2 col-6 mx-auto">
-			<button type="submit" class="btn btn-outline-primary">Envoyer la demande</button>
-            </div>
+			<div class="mt-5 d-grid gap-2 col-6 mx-auto">
+				<button type="submit" class="btn btn-outline-primary">Envoyer la demande</button>
+			</div>
 			{{ form_end(form) }}
 		</div>
 	{% endblock %}

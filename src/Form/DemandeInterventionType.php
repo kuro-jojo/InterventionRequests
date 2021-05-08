@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class DemandeInterventionType extends AbstractType
 {
@@ -31,11 +32,12 @@ class DemandeInterventionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nomDemandeur', TextType::class, $this->getConfiguration('Demandeur', ''))
-            ->add('emailDemandeur', TextType::class, $this->getConfiguration('Email', 'toto@example.com'))
-            ->add('contactDemandeur', TextType::class, $this->getConfiguration('Contact', '(00221) 77 XXX XX XX'))
-            ->add('fonction', TextType::class, $this->getConfiguration('Fonction', ''))
-            ->add('priorite', ChoiceType::class, $this->getConfiguration('Priorité', '', [
+            ->add('nomDemandeur', TextType::class, $this->getConfiguration('', 'John Doe'))
+            ->add('emailDemandeur', TextType::class, $this->getConfiguration('', 'toto@example.com'))
+            ->add('contactDemandeur', TextType::class, $this->getConfiguration('', '(00221) 77 XXX XX XX'))
+            ->add('fonction', TextType::class, $this->getConfiguration('', 'Enseignant'))
+            ->add('description', TextareaType::class, $this->getConfiguration('', 'Saisissez, si possible, une brève description de votre problème'))
+            ->add('priorite', ChoiceType::class, $this->getConfiguration('', '', [
                 'choices' => Priorite::getChoices(),
                 'attr'=>[
                     'class'=>'form-select'

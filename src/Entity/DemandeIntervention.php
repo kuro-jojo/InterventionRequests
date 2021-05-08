@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\DemandeInterventionRepository;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
@@ -91,6 +92,12 @@ class DemandeIntervention
      * @DoctrineAssert\Enum(entity="App\DBAL\Types\CauseDefaillanceType")
      */
     private $causeDefaillance;
+
+    /**
+     * @Assert\Length(min="10",minMessage="La description doit faire au moins 10 caractères")
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
 
     public function __construct()
     {
@@ -266,6 +273,18 @@ class DemandeIntervention
     public function removeTraiteursDemande(AgentMaintenance $traiteursDemande): self
     {
         $this->traiteursDemande->removeElement($traiteursDemande);
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
