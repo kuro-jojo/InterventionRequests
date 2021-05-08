@@ -124,6 +124,9 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.2.0"
     },
+    "mercuryseries/flashy-bundle": {
+        "version": "v4.0.0"
+    },
     "monolog/monolog": {
         "version": "2.2.0"
     },

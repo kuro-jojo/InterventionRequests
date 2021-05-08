@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\PoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\DBAL\Types\PoleType;
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Repository\PoleRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 /**
  * @ORM\Entity(repositoryClass=PoleRepository::class)
  */
@@ -20,7 +21,8 @@ class Pole
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="PoleType", nullable=false)
+     * @DoctrineAssert\Enum(entity="App\DBAL\Types\PoleType")
      */
     private $nomPole;
 
@@ -50,7 +52,7 @@ class Pole
         return $this->id;
     }
 
-    public function getNomPole(): ?string
+    public function getNomPole(): string
     {
         return $this->nomPole;
     }

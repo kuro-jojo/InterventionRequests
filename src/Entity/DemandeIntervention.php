@@ -2,14 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Pole;
 use App\Entity\Responsable;
 use App\DBAL\Types\Priorite;
+use App\Entity\AgentMaintenance;
 use Doctrine\ORM\Mapping as ORM;
 use App\DBAL\Types\DepartementType;
 use App\DBAL\Types\CauseDefaillanceType;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\DemandeInterventionRepository;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 use Fresh\DoctrineEnumBundle\Validator\Constraints as DoctrineAssert;
 
 /**
@@ -26,21 +31,30 @@ class DemandeIntervention
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Veuillez saisir votre nom")
      */
     private $nomDemandeur;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Email(message="Adresse email incorrecte")
      */
     private $emailDemandeur;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Veuillez entrez un numéro de contact")
+     * @Assert\Regex(
+     *      pattern="/^(00221)?(7[786])(\d){7}$/",
+     *      message="Respectez le format 77 xxx xx xx "
+     *          )
+     * 
      */
     private $contactDemandeur;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Entrez votre fonction")
      */
     private $fonction;
 
@@ -67,10 +81,10 @@ class DemandeIntervention
     private $priorite;
 
     /**
-     * @ORM\Column(name="department", type="DepartementType", nullable=false)
+     * @ORM\Column(name="departement", type="DepartementType", nullable=false)
      * @DoctrineAssert\Enum(entity="App\DBAL\Types\DepartementType")
      */
-    private $department;
+    private $departement;
 
     /**
      * @ORM\Column(name="causeDefaillance", type="CauseDefaillanceType", nullable=false)
@@ -146,18 +160,18 @@ class DemandeIntervention
     /**
      * @return mixed
      */
-    public function getDepartment()
+    public function getDepartement()
     {
-        return $this->department;
+        return $this->departement;
     }
 
     /**
-     * @param mixed $department
+     * @param mixed $departement
      * @return DemandeIntervention
      */
-    public function setDepartment($department)
+    public function setDepartement($department)
     {
-        $this->department = $department;
+        $this->departement = $department;
         return $this;
     }
 

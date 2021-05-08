@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DBAL\Types\PoleType;
 use App\Entity\AgentMaintenance;
 use App\Entity\ChefPole;
 use App\Entity\ChefService;
@@ -29,16 +30,19 @@ class UserFixtures extends Fixture
         $chefService->setEmail("prince@example.com");
 
         $pole1 = new Pole;
-        $pole1->setNomPole("Menuiserie");
+        $pole1->setNomPole(PoleType::MACONNERIE);
 
         $pole2 = new Pole;
-        $pole2->setNomPole("Plomberie");
+        $pole2->setNomPole(PoleType::PLOMBERIE);
 
         $pole3 = new Pole;
-        $pole3->setNomPole("Electricite");
+        $pole3->setNomPole(PoleType::ELECTRICITE);
 
         $pole4 = new Pole;
-        $pole4->setNomPole("Climatiseur");
+        $pole4->setNomPole(PoleType::MENUISERIE);
+
+        $pole5 = new Pole;
+        $pole5->setNomPole(PoleType::CLIMATISATION);
 
         $chefPole1 = new ChefPole;
         $chefPole1->setNom("Ka");
@@ -87,6 +91,7 @@ class UserFixtures extends Fixture
         $manager->persist($pole2);
         $manager->persist($pole3);
         $manager->persist($pole4);
+        $manager->persist($pole5);
         $manager->persist($agent1);
         $manager->persist($agent2);
         
