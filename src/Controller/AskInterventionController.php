@@ -28,6 +28,8 @@ class AskInterventionController extends AbstractController
 
         //traitement des requêtes
         if ($form->isSubmitted() && $form->isValid()){
+            $demande->setDateDemande((new \DateTime('now')));
+            $demande->setStatut('EnAttente');
             $em->persist($demande);
             $em->flush();
 
@@ -39,4 +41,5 @@ class AskInterventionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    
 }

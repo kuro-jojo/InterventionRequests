@@ -99,6 +99,16 @@ class DemandeIntervention
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateDemande;
+
+    /**
+     * @ORM\Column(type="StatutType")
+     */
+    private $statut;
+
     public function __construct()
     {
         $this->responsables = new ArrayCollection();
@@ -285,6 +295,30 @@ class DemandeIntervention
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getDateDemande(): ?\DateTimeInterface
+    {
+        return $this->dateDemande;
+    }
+
+    public function setDateDemande(\DateTimeInterface $dateDemande): self
+    {
+        $this->dateDemande = $dateDemande;
+
+        return $this;
+    }
+
+    public function getStatut()
+    {
+        return $this->statut;
+    }
+
+    public function setStatut($statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

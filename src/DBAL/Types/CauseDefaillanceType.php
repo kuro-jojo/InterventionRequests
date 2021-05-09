@@ -12,9 +12,9 @@ final class CauseDefaillanceType extends AbstractEnumType
     public const Autres = 'Autres';
 
     protected static $choices = [
-        self::UsureNormal => 'UsureNormal',
-        self::DefautUtilisateur => 'DefautUtilisateur',
-        self::DefautProduit => 'DefautProduit',
+        self::UsureNormal => 'Usure Normal',
+        self::DefautUtilisateur => 'Defaut Utilisateur',
+        self::DefautProduit => 'Defaut Produit',
         self::Autres => 'Autres'
     ];
 }

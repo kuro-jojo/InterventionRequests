@@ -47,4 +47,20 @@ class DemandeInterventionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    //trouver toutes les demandes d'intervention
+
+    /**
+     * @return Demande
+     */
+    public function findAllAskQuery(): array {
+        return $this->findAskQuery()
+            ->getQuery()
+            ->getResult();
+    }
+
+    //creation d'une requête
+    public function findAskQuery(): QueryBuilder{
+        return $this->createQueryBuilder('p');
+    }
 }
