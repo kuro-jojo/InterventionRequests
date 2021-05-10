@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Pole;
 use App\Entity\Responsable;
 use App\DBAL\Types\Priorite;
+use App\DBAL\Types\StatutType;
 use App\Entity\AgentMaintenance;
 use Doctrine\ORM\Mapping as ORM;
 use App\DBAL\Types\DepartementType;

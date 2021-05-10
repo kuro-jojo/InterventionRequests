@@ -18,39 +18,41 @@
 		{% endif %}
 
 		<div
-			class="container col-5 " style="margin-top:10%">
+			class="container col-5 " style="margin-top:10%;">
 			<!-- Outer Row -->
 
 			<div class="pl-5">
 
 				<div
-					class=" border-0 shadow-lg  ">
+					class=" border-0 shadow-lg" style="border-radius:30px">
 					<!-- Nested Row within Card Body -->
-					<div class="row p-5">
+					<div class="p-5">
 						<div class="text-center">
 							<h1 class="h4 text-gray-900 mb-4">Se connecter</h1>
 						</div>
-						<div class="form-group">
-							<input type="email" name="email" class="form-control" value="{{ last_username }}" id="inputEmail" placeholder="Email" required autofocus>
-						</div>
-						<div class="form-group gy-3">
-							<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password" required>
-							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-						</div>
-						<div class="form-group gy-3">
-							<div class="checkbox custom-control custom-checkbox small">
-								<input type="checkbox" name="_remember_me" class="custom-control-input" id="customCheck">
-								<label class="custom-control-label" for="customCheck">Se souvenir de moi</label>
+						<div class="row">
+							<div class="form-group">
+								<input type="email" name="email" class="form-control" value="{{ last_username }}" id="inputEmail" placeholder="Email" required autofocus>
 							</div>
-						</div>
-						<div class="d-grid gap-2 col-6 mx-auto gy-5">
-							<button class="btn btn-outline-primary" type="submit">
-								Se connecter
-							</button>
-							<hr>
-						</div>
-						<div class="text-center">
-							<a class="small" href="#">Mot de passe oublié?</a>
+							<div class="form-group gy-3">
+								<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password" required>
+								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+							</div>
+							<div class="form-group gy-3">
+								<div class="checkbox custom-control custom-checkbox small">
+									<input type="checkbox" name="_remember_me" class="custom-control-input" id="customCheck">
+									<label class="custom-control-label" for="customCheck">Se souvenir de moi</label>
+								</div>
+							</div>
+							<div class="d-grid gap-2 col-6 mx-auto gy-5">
+								<button class="btn btn-outline-primary" type="submit">
+									Se connecter
+								</button>
+								<hr>
+							</div>
+							<div class="text-center">
+								<a class="small" href="#">Mot de passe oublié?</a>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -22,19 +22,16 @@ class AgentMaintenanceRepository extends ServiceEntityRepository
     // /**
     //  * @return AgentMaintenance[] Returns an array of AgentMaintenance objects
     //  */
-    /*
-    public function findByExampleField($value)
+    public function findByPole($pole)
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->join('a.mesPoles','p','WITH','p.id = :id')
+            ->setParameter('id', $pole->getId())
             ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?AgentMaintenance
