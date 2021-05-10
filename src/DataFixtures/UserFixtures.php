@@ -13,6 +13,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserFixtures extends Fixture
 {   
+    public const ROLE_CHEF_POLE = 'ROLE_CHEF_POLE';
+    public const ROLE_CHEF = 'ROLE_CHEF';
+    public const ROLE_CHEF_SERVICE = 'ROLE_CHEF_SERVICE';
+    public const ROLE_AGENT = 'ROLE_AGENT';
+
     private $encoder;
 
     public function __construct(UserPasswordEncoderInterface $encoder)
@@ -25,7 +30,7 @@ class UserFixtures extends Fixture
 
         $chefService->setNom("Dieng");
         $chefService->setPrenom("Prince");
-        $chefService->setRoles(["ROLE_CHEF_SERVICE"]);
+        $chefService->setRoles([$this::ROLE_CHEF_SERVICE,$this::ROLE_CHEF]);
         $chefService->setPassword($this->encoder->encodePassword($chefService,"toto"));
         $chefService->setEmail("prince@example.com");
 
@@ -47,7 +52,7 @@ class UserFixtures extends Fixture
         $chefPole1 = new ChefPole;
         $chefPole1->setNom("Ka");
         $chefPole1->setPrenom("Adama");
-        $chefPole1->setRoles(["ROLE_CHEF_POLE"]);
+        $chefPole1->setRoles([$this::ROLE_CHEF,$this::ROLE_CHEF_POLE]);
         $chefPole1->setPassword($this->encoder->encodePassword($chefPole1,"toto"));
         $chefPole1->setEmail("ka@example.com");
         $chefPole1->setMonPole($pole1);
@@ -56,7 +61,7 @@ class UserFixtures extends Fixture
 
         $chefPole2->setNom("Faye");
         $chefPole2->setPrenom("Jean");
-        $chefPole2->setRoles(["ROLE_CHEF_POLE"]);
+        $chefPole2->setRoles([$this::ROLE_CHEF,$this::ROLE_CHEF_POLE]);
         $chefPole2->setPassword($this->encoder->encodePassword($chefPole2,"toto"));
         $chefPole2->setEmail("faye@example.com");
         $chefPole2->setMonPole($pole2);
@@ -67,7 +72,7 @@ class UserFixtures extends Fixture
 
         $agent1->setNom("Faye");
         $agent1->setPrenom("Chris");
-        $agent1->setRoles(["ROLE_CHEF_AGENT"]);
+        $agent1->setRoles([$this::ROLE_AGENT]);
         $agent1->setPassword($this->encoder->encodePassword($agent1,"toto"));
         $agent1->setEmail("chris@example.com");
         $agent1->addMesPole($pole1);
@@ -77,7 +82,7 @@ class UserFixtures extends Fixture
 
         $agent2->setNom("Ngom");
         $agent2->setPrenom("Toto");
-        $agent2->setRoles(["ROLE_CHEF_AGENT"]);
+        $agent2->setRoles([$this::ROLE_AGENT]);
         $agent2->setPassword($this->encoder->encodePassword($agent2,"toto"));
         $agent2->setEmail("toto@example.com");
         $agent2->addMesPole($pole1);

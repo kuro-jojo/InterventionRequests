@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\ChefPole;
 use App\Entity\DemandeIntervention;
 use App\Form\DemandeInterventionType;
@@ -10,54 +11,59 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\DemandeInterventionRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\User;
 
 //mettre en place la liste des demande pour un agent de pole
 class AskManagementController extends AbstractController
 {
-    #[Route('/ask/management', name: 'ask_management')]
+
+    public const ROLE_CHEF_POLE = 'ROLE_CHEF_POLE';
+    public const ROLE_CHEF_SERVICE = 'ROLE_CHEF_SERVICE';
+
+    /**
+     * 
+     *@Route("/ask/management", name="app_ask_management")
+     */
     public function index(): Response
     {
         return $this->render('ask_management/index.html.twig', [
             'controller_name' => 'AskManagementController',
         ]);
     }
-
-    #[Route('/pole/chef', name: 'pole_chef')]
-    public function showPoleChef(Security $security, Request $request, DemandeInterventionRepository $repository)
+    /**
+     * @IsGranted("ROLE_CHEF")
+     *@Route("/ask/list", name="app_ask_list")
+     * 
+     */
+    public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository)
     {
-        $demande = new DemandeIntervention();
-        $form = $this->createForm(DemandeInterventionType::class, $demande);
+        $demandes = new DemandeIntervention();
+        $form = $this->createForm(DemandeInterventionType::class, $demandes);
         $form->handleRequest($request);
 
-        //instance d'un chef de pole
-        $chefPole = new ChefPole();
+        $chef = $security->getUser();
+        if ($this->isGranted($this::ROLE_CHEF_POLE)) {
+            $monPole = $chef->getMonPole();
 
-        $chefPole = $security->getUser();
-        if ($this->isGranted('ROLE_CHEF_POLE')){
-            $monPole = $chefPole->getMonPole();
-            dump($monPole);
-            $demande = $repository->findByPoleConcerne($monPole);
-            
-            return $this->render('ask_management/chefpole.html.twig', [
-                'form' => $form->createView(),
-                'demandes' => $demande
-            ]);
+            $demandes = $askRepository->findByPoleConcerne($monPole);
+        } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
+            $demandes = $askRepository->findAll();
         }
-        elseif ($this->isGranted('ROLE_CHEF_SERVICE')){
-            $demande = $repository->findAll();
-            return $this->render('ask_management/chefpole.html.twig', [
-                'form' => $form->createView(),
-                'demandes' => $demande
-            ]);
-        }
-        
-        return $this->redirectToRoute('app_login');
-        
-        
-        
-        
-        
+
+        return $this->render('ask_management/listDemandes.html.twig', [
+            'form' => $form->createView(),
+            'demandes' => $demandes
+        ]);
+    }
+
+    /**
+     * 
+     * @Route("/ask/assign/{id<\d+>}", name="app_ask_assign")
+     */
+    public function assignAsk(): Response
+    {
+
+        return new Response;
     }
 }

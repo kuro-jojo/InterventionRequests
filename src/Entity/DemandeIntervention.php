@@ -39,6 +39,8 @@ class DemandeIntervention
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Email(message="Adresse email incorrecte")
+     * @Assert\NotBlank(message="Veuillez saisir une adresse email")
+     * 
      */
     private $emailDemandeur;
 

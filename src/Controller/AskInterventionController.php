@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AskInterventionController extends AbstractController
 {
     /**
-     * @Route("/intervention/ask", name="app_ask_intervention")
+     * @Route("/ask", name="app_ask_intervention")
      * @param Request $request
      * @return Response
      */
