@@ -67,6 +67,7 @@ class AskManagementController extends AbstractController
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
         }
+        dump($agents);
         return $this->render('ask_management/listDemandes.html.twig', [
             'form' => $form->createView(),
             'demandes' => $demandes,
