@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Pole;
 use App\Entity\Responsable;
 use App\DBAL\Types\Priorite;
+use App\DBAL\Types\StatutType;
 use App\Entity\AgentMaintenance;
 use Doctrine\ORM\Mapping as ORM;
 use App\DBAL\Types\DepartementType;
@@ -39,6 +40,8 @@ class DemandeIntervention
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Email(message="Adresse email incorrecte")
+     * @Assert\NotBlank(message="Veuillez saisir une adresse email")
+     * 
      */
     private $emailDemandeur;
 
@@ -98,6 +101,16 @@ class DemandeIntervention
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dateDemande;
+
+    /**
+     * @ORM\Column(type="StatutType")
+     */
+    private $statut;
 
     public function __construct()
     {
@@ -285,6 +298,30 @@ class DemandeIntervention
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getDateDemande(): ?\DateTimeInterface
+    {
+        return $this->dateDemande;
+    }
+
+    public function setDateDemande(\DateTimeInterface $dateDemande): self
+    {
+        $this->dateDemande = $dateDemande;
+
+        return $this;
+    }
+
+    public function getStatut()
+    {
+        return $this->statut;
+    }
+
+    public function setStatut($statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

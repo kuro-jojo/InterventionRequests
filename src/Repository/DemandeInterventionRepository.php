@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\DemandeIntervention;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method DemandeIntervention|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,20 @@ class DemandeInterventionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    //trouver toutes les demandes d'intervention
+
+    /**
+     * @return Demande
+     */
+    public function findAllAskQuery(): array {
+        return $this->findAskQuery()
+            ->getQuery()
+            ->getResult();
+    }
+
+    //creation d'une requête
+    public function findAskQuery(): QueryBuilder{
+        return $this->createQueryBuilder('p');
+    }
 }

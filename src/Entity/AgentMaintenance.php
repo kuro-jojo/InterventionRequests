@@ -14,12 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AgentMaintenance extends User
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+  
 
     /**
      * @ORM\ManyToMany(targetEntity=Pole::class, inversedBy="agentMaintenances")
@@ -35,11 +30,6 @@ class AgentMaintenance extends User
     {
         $this->mesPoles = new ArrayCollection();
         $this->demandeInterventions = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     /**

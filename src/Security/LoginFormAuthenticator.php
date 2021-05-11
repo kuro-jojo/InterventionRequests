@@ -100,7 +100,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         }
         // $this->flashy->success("Connexion réussie!");
 
-        return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        return new RedirectResponse($this->urlGenerator->generate('pole_chef'));
     }
 
     protected function getLoginUrl()
