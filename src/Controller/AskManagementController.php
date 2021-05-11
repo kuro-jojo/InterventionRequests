@@ -53,6 +53,17 @@ class AskManagementController extends AbstractController
             $monPole = $chef->getMonPole();
             $demandes = $askRepository->findByPoleConcerne($monPole);
             $agents = $agentRepository->findByPole($monPole);
+            // recurperons les traiteurs de demande
+            foreach ($demandes as $demande){
+                //verifions si un agent traite la demande 
+                foreach ($agents as $key => $agent){
+                    //vérifier si l'agent is in $demande->getTraiteursDemande()
+                    if ( $demande->getTraiteursDemande()->contains($agent)){
+                        unset($agents[$key]);
+                    }
+                }
+            }
+            
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
         }

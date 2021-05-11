@@ -2,15 +2,16 @@
 
 namespace App\Controller;
 
+use App\DBAL\Types\StatutType;
 use App\Entity\DemandeIntervention;
 use App\Form\DemandeInterventionType;
-use App\Repository\DemandeInterventionRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use MercurySeries\FlashyBundle\FlashyNotifier;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use MercurySeries\FlashyBundle\FlashyNotifier;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\DemandeInterventionRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AskInterventionController extends AbstractController
 {
@@ -29,7 +30,7 @@ class AskInterventionController extends AbstractController
         //traitement des requêtes
         if ($form->isSubmitted() && $form->isValid()){
             $demande->setDateDemande((new \DateTime('now')));
-            $demande->setStatut('EnAttente');
+            $demande->setStatut(StatutType::EN_ATTENTE);
             $em->persist($demande);
             $em->flush();
 
