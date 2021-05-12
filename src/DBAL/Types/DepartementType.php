@@ -30,15 +30,15 @@ final class DepartementType extends AbstractEnumType
     public const Autre = 'Autre';
 
     protected static $choices = [
-        self::BatimentDirectional => 'BatimentDirectional',
-        self::BatimentACP => 'BatimentACP',
-        self::GenieCivil => 'GenieCivil',
+        self::BatimentDirectional => 'Batiment Directionnel',
+        self::BatimentACP => 'Batiment ACP',
+        self::GenieCivil => 'Genie Civil',
         self::Gestion => 'Gestion',
-        self::GenieChimique => 'GenieChimique',
-        self::GenieElec => 'GenieElec',
-        self::GenieMeca => 'GenieMeca',
-        self::GenieInf => 'GenieInf',
-        self::RessourceHumaines => 'RessourceHumaines',
+        self::GenieChimique => 'Genie Chimique',
+        self::GenieElec => 'Genie Electrique',
+        self::GenieMeca => 'Genie Mecanique',
+        self::GenieInf => 'Genie Informatique',
+        self::RessourceHumaines => 'Ressources Humaines',
         self::Caisse => 'Caisse',
         self::LPAO => 'LPAO',
         self::LERG => 'LERG',

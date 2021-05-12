@@ -1,20 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Service de maintenance
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<style>
+		body {
+			overflow: hidden;
+		}
+	</style>
+	{% include "layouts/_nav.html.twig" %}
+	{{flasher_render()}}
+	<div class="px-4 pt-5 my-5 text-center ">
+		<h1 class="display-4 fw-bold">Bienvenue sur le site du service de maintenance</h1>
+		<div class="col-lg-6 mx-auto mt-5">
+			<p class="lead mb-4">Ce site a été conçu pour mieux gérer vos demandes d'intervention au sein de l'Ecole Supérieure Polytechnique de Dakar.</p>
+			<div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+				<a href="{{path('app_ask_intervention')}}" class="btn btn-primary btn-lg px-4 me-sm-3">Faire ma demande</a>
+				<a href="#" class="btn btn-outline-secondary btn-lg px-4">Contacter le service</a>
+			</div>
+		</div>
+		<hr>
+		{# <div class="overflow-hidden" style="max-height: 40vh;">
+					<div class="container px-5">
+						<img src="{{asset('img/ucad.jpg')}}" class="border rounded-3 shadow-lg mb-4" alt="Example image" width="200" height="200" loading="lazy">
+					</div>
+				</div> #}
+	</div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/jonathan/Bureau/projects/intervention_requests/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/jonathan/Bureau/projects/intervention_requests/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
-</div>
 {% endblock %}

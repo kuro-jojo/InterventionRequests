@@ -54,6 +54,7 @@ document.getElementById('assign-' + id).style.visibility = "hidden";
 	{% if is_granted("ROLE_CHEF_SERVICE") %}
 		{% set service = "service" %}
 	{% endif %}
+	{% include "layouts/_nav.html.twig" %}
 	<div class=" mt-4">
 		<h1 class="text-center">Liste des demandes</h1>
 		<div class="table-responsive {{service}}">
@@ -75,18 +76,16 @@ document.getElementById('assign-' + id).style.visibility = "hidden";
 				<tbody>
 					{% for demande in demandes %}
 						<tr onmouseover="display({{demande.id}},1)" onmouseout="display({{demande.id}},0)">
-							<td>{{demande.statut}}</td>
+							<td>{{demande.statut|readable_enum}}</td>
 							<td>{{demande.id}}</td>
 							<td>{{demande.dateDemande | date('d/m/y à H:i:s') }}</td>
-							<td>
-								<a href="#" class="text-dark">{{ demande.nomDemandeur }}</a>
-							</td>
+							<td>{{ demande.nomDemandeur }}</td>
 							<td>{{demande.contactDemandeur}}</td>
 							<td>{{demande.fonction}}</td>
 							<td>{{demande.poleConcerne.nomPole}}</td>
-							<td>{{demande.priorite}}</td>
-							<td>{{ demande.causeDefaillance }}</td>
-							<td>{{ demande.departement }}</td>
+							<td>{{demande.priorite | enum_constant}}</td>
+							<td>{{ demande.causeDefaillance | readable_enum }}</td>
+							<td>{{ demande.departement | readable_enum }}</td>
 							{% if is_granted('ROLE_CHEF_POLE') %}
 								<td id="assign-{{demande.id}}" class="assign">
 									<a href="#" class="text-dark btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#assignModal">Assigner à une équipe</a>
@@ -111,7 +110,7 @@ document.getElementById('assign-' + id).style.visibility = "hidden";
 															</div>
 														{% endfor %}
 														<div class="d-grid gap-2 col-6 mx-auto mt-3">
-														<button type="submit" class="btn btn-outline-primary">Assigner</button>
+															<button type="submit" class="btn btn-outline-primary">Assigner</button>
 														</div>
 													</form>
 												</div>
@@ -120,9 +119,9 @@ document.getElementById('assign-' + id).style.visibility = "hidden";
 
 													Aucun agent dans le service ou disponible
 												</div>
-													<div class="modal-footer justify-content-center">
-														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-													</div>
+												<div class="modal-footer justify-content-center">
+													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+												</div>
 											{% endif %}
 										</div>
 									</div>
