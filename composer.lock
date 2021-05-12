@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4c98b3a96b775d8cbbd5ded89143c827",
+    "content-hash": "68b7a1d8ada0cf9ab72502ab6ab944a8",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -559,16 +559,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "a08bc3b4d8567cdff05e89b272ba1e06e9d71c21"
+                "reference": "d6b3c37804539a24ba8a7d647a6144cab2f13242"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/a08bc3b4d8567cdff05e89b272ba1e06e9d71c21",
-                "reference": "a08bc3b4d8567cdff05e89b272ba1e06e9d71c21",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/d6b3c37804539a24ba8a7d647a6144cab2f13242",
+                "reference": "d6b3c37804539a24ba8a7d647a6144cab2f13242",
                 "shasum": ""
             },
             "require": {
@@ -598,7 +598,7 @@
                 "symfony/phpunit-bridge": "^5.2",
                 "symfony/property-info": "^4.3.3|^5.0",
                 "symfony/proxy-manager-bridge": "^3.4|^4.3.3|^5.0",
-                "symfony/security-bundle": "^4.4|5.0",
+                "symfony/security-bundle": "^4.4|^5.0",
                 "symfony/twig-bridge": "^3.4.30|^4.3.3|^5.0",
                 "symfony/validator": "^3.4.30|^4.3.3|^5.0",
                 "symfony/web-profiler-bundle": "^3.4.30|^4.3.3|^5.0",
@@ -649,7 +649,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/DoctrineBundle/issues",
-                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.3.1"
+                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.3.2"
             },
             "funding": [
                 {
@@ -665,7 +665,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-04-05T14:21:02+00:00"
+            "time": "2021-05-06T19:21:22+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -1956,6 +1956,182 @@
                 }
             ],
             "time": "2020-12-14T13:15:25+00:00"
+        },
+        {
+            "name": "php-flasher/flasher",
+            "version": "v0.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-flasher/flasher.git",
+                "reference": "6321dafa67fbcc8e3a324166843bfcaa1522fb75"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-flasher/flasher/zipball/6321dafa67fbcc8e3a324166843bfcaa1522fb75",
+                "reference": "6321dafa67fbcc8e3a324166843bfcaa1522fb75",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5.0|^6.0|^7.0|^8.0|^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Flasher\\Prime\\": ""
+                },
+                "files": [
+                    "helpers.php"
+                ],
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Younes Khoubza",
+                    "email": "younes.khoubza@gmail.com",
+                    "homepage": "https://github.com/yoeunes",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A powerful and flexible flash notifications system for PHP",
+            "homepage": "https://php-flasher.github.io/",
+            "keywords": [
+                "Flasher",
+                "alerts",
+                "flash",
+                "laravel",
+                "lumen",
+                "messages",
+                "notifications",
+                "notify",
+                "noty",
+                "notyf",
+                "php",
+                "pnotify",
+                "sweet alert",
+                "symfony",
+                "toastr"
+            ],
+            "support": {
+                "issues": "https://github.com/php-flasher/flasher/issues",
+                "source": "https://github.com/php-flasher/flasher/tree/v0.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/paypalme/yoeunes",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://ko-fi.com/yoeunes",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://opencollective.com/php-flasher",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/yoeunes",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-05-09T17:18:48+00:00"
+        },
+        {
+            "name": "php-flasher/flasher-symfony",
+            "version": "v0.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-flasher/flasher-symfony.git",
+                "reference": "87d29e13287a4568e77ec88f498ef93a3ef90627"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-flasher/flasher-symfony/zipball/87d29e13287a4568e77ec88f498ef93a3ef90627",
+                "reference": "87d29e13287a4568e77ec88f498ef93a3ef90627",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "php-flasher/flasher": "^0.4",
+                "symfony/config": "^2.7|^3.0|^4.0|^5.0",
+                "symfony/console": "^2.7|^3.0|^4.0|^5.0",
+                "symfony/dependency-injection": "^2.7|^3.0|^4.0|^5.0",
+                "symfony/http-kernel": "^2.7|^3.0|^4.0|^5.0",
+                "symfony/twig-bundle": "^2.7|^3.0|^4.0|^5.0",
+                "symfony/yaml": "^2.7|^3.0|^4.0|^5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5.0|^6.0|^7.0|^8.0|^9.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Flasher\\Symfony\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Younes Khoubza",
+                    "email": "younes.khoubza@gmail.com",
+                    "homepage": "https://github.com/yoeunes",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Symfony bundle integrating PHP Flasher into Symfony applications",
+            "homepage": "https://php-flasher.github.io/",
+            "keywords": [
+                "alerts",
+                "bundle",
+                "flex",
+                "laravel",
+                "lumen",
+                "messages",
+                "notifications",
+                "notify",
+                "php",
+                "pnotify",
+                "symfony",
+                "toastr",
+                "yoeunes"
+            ],
+            "support": {
+                "issues": "https://github.com/php-flasher/flasher-symfony/issues",
+                "source": "https://github.com/php-flasher/flasher-symfony/tree/v0.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/paypalme/yoeunes",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://ko-fi.com/yoeunes",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://opencollective.com/php-flasher",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/yoeunes",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-05-09T17:18:48+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",

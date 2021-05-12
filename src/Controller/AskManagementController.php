@@ -17,6 +17,10 @@ use App\Repository\DemandeInterventionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+
+/**
+ * @Route("/ask/", name="app_ask")
+ */
 //mettre en place la liste des demande pour un agent de pole
 class AskManagementController extends AbstractController
 {
@@ -25,18 +29,8 @@ class AskManagementController extends AbstractController
     public const ROLE_CHEF_SERVICE = 'ROLE_CHEF_SERVICE';
 
     /**
-     * 
-     *@Route("/ask/management", name="app_ask_management")
-     */
-    public function index(): Response
-    {
-        return $this->render('ask_management/index.html.twig', [
-            'controller_name' => 'AskManagementController',
-        ]);
-    }
-    /**
      * @IsGranted("ROLE_CHEF")
-     *@Route("/ask/list", name="app_ask_list")
+     *@Route("/list", name="_list")
      * 
      */
     public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository,AgentMaintenanceRepository $agentRepository): Response
@@ -67,8 +61,7 @@ class AskManagementController extends AbstractController
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
         }
-        dump($agents);
-        return $this->render('ask_management/listDemandes.html.twig', [
+         return $this->render('ask_management/listDemandes.html.twig', [
             'form' => $form->createView(),
             'demandes' => $demandes,
             'agents'=>$agents
@@ -77,7 +70,7 @@ class AskManagementController extends AbstractController
 
     /**
      * 
-     * @Route("/ask/assign/{id<\d+>}", name="app_ask_assign")
+     * @Route("/assign/{id<\d+>}", name="_assign")
      */
     public function assignAsk(DemandeIntervention $demande,Request $request,AgentMaintenanceRepository $agentRepository,EntityManagerInterface $em): Response
     {

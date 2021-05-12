@@ -6,8 +6,8 @@ use Fresh\DoctrineEnumBundle\DBAL\Types\AbstractEnumType;
 final class Priorite extends AbstractEnumType
 {
     public const Urgent = 'Urgent';
-    public const PeuUrgent = 'PeuUrgent';
-    public const PasUrgent = 'PasUrgent';
+    public const PeuUrgent = 'Peu urgente';
+    public const PasUrgent = 'Pas urgente';
 
     protected static $choices = [
         self::Urgent => 'Elle est urgente',

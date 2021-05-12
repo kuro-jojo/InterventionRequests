@@ -1,0 +1,38 @@
+<header class="p-3 bg-dark text-white">
+	<div class="container">
+		<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+			<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+				<li>
+					<a href="{{path('app_home')}}" class="nav-link px-2 text-secondary">Home</a>
+				</li>
+				{% if app.user is null %}
+					<li>
+						<a href="{{path('app_ask_intervention')}}" class="nav-link px-2 text-white">Faire une demande
+						</a>
+					</li>
+				{% else %}
+					<li>
+						<a href="{{path('app_ask_list')}}" class="nav-link px-2 text-white">Liste des interventions</a>
+					</li>
+				{% endif %}
+				<li>
+					<a href="#" class="nav-link px-2 text-white">A propos</a>
+				</li>
+			</ul>
+
+			{# <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+									          <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+									        </form> #}
+			{% if app.user is null %}
+				<div class="text-end">
+					<a href="{{path('app_login')}}" class="btn btn-outline-light me-2">Connexion</a>
+				</div>
+				{% else %}
+					<div class="text-end">
+					<a href="{{path('app_logout')}}" class="btn btn-outline-danger text-white me-2">Déconnexion</a>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</header>

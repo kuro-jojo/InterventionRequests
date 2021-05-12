@@ -130,6 +130,12 @@
     "nikic/php-parser": {
         "version": "v4.10.5"
     },
+    "php-flasher/flasher": {
+        "version": "v0.4.3"
+    },
+    "php-flasher/flasher-symfony": {
+        "version": "v0.4.3"
+    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
