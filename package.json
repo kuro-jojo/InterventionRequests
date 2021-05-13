@@ -14,7 +14,7 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "heroku-post-build": "encore production --progress"
+        "postinstall": "encore production --progress"
 
     },
     "dependencies": {
