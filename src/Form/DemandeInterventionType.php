@@ -58,7 +58,9 @@ class DemandeInterventionType extends AbstractType
             ]))
             ->add('poleConcerne', EntityType::class, $this->getConfiguration('Type de défaillance', '', [
                 'class' => Pole::class,
-                'choice_label' => 'nomPole',
+                'choice_label' => function($pole){
+                    return $pole->getNomPole();
+                },
                 'multiple' => false,
                 'attr'=>[
                     'class'=>'form-select'
