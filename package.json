@@ -14,11 +14,16 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "heroku-postbuild": "node_modules/.bin/encore production"
+        "heroku-postbuild": "encore production --progress"
 
     },
     "dependencies": {
         "@popperjs/core": "^2.9.2",
         "bootstrap": "^5.0.0-beta3"
+    },
+    "engines": {
+        "node": "14.x",
+        "npm": "6.x",
+        "yarn": "1.x"
     }
 }
