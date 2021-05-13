@@ -22,6 +22,7 @@
         "bootstrap": "^5.0.0-beta3"
     },
     "engines": {
-        "npm": "6.x"
+        "npm": "6.x",
+        "yarn": "1.x"
     }
 }
