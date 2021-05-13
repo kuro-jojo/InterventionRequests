@@ -12,9 +12,9 @@
       npm install bootstrap@next 
       composer req encore --install webpack encore
       
-## Déploiement
-  # Avec heroku
-    heroku login
-    heroku create nomprojet
-    git push heroku main
-  
+  ## Déploiement
+    # Avec heroku
+      heroku login
+      heroku create nomprojet
+      git push heroku main
+
