@@ -89,8 +89,9 @@
                                 </div>
                                 <div class="row pt-5">
                                     <div class="col-lg-12">
-                                        {{ form_widget(form.message, {'attr': {'class': 'effect-1', 'placeholder' : 'Votre méssage'}}) }}
+                                        {{ form_widget(form.message, {'attr': {'class': 'effect-1', 'placeholder' : 'Votre message'}}) }}
                                         <span class="Focus-border"></span>
+                                        {{form_errors(form.message)}}
                                     </div>
                                 </div>
                                 <div class="row pt-4">

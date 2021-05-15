@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -33,7 +36,7 @@ class Contact
     /**
      * @var string|null
      * @Assert\NotBlank()
-     * @Assert\Length(min=10)
+     * @Assert\Length(min=10, minMessage="Votre message doit comporter au moins {{ limit }} caractères")
      */
     private $message;
 
