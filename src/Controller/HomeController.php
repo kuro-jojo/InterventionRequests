@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Form\ContactType;
 use Symfony\Component\Mime\Email;
+use Flasher\Prime\FlasherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/contact", name="app_contact")
      */
-    public function contactUs(Request $request,  MailerInterface $mailer): Response
+    public function contactUs(Request $request,  MailerInterface $mailer, FlasherInterface $flasher): Response
     {
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
@@ -43,6 +44,7 @@ class HomeController extends AbstractController
 <p>" . $contact->getMessage() . "</p>");
 
             $mailer->send($mail);
+            $flasher->addSuccess('Votre message a bien été envoyé!!');
             return $this->redirectToRoute('app_home');
         }
 

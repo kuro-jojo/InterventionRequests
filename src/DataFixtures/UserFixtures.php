@@ -28,11 +28,11 @@ class UserFixtures extends Fixture
     {
         $chefService = new ChefService;
 
-        $chefService->setNom("Dieng");
-        $chefService->setPrenom("Prince");
+        $chefService->setNom("Gueye");
+        $chefService->setPrenom("Prince Momar");
         $chefService->setRoles([$this::ROLE_CHEF_SERVICE,$this::ROLE_CHEF]);
         $chefService->setPassword($this->encoder->encodePassword($chefService,"toto"));
-        $chefService->setEmail("prince@example.com");
+        $chefService->setEmail("princemomar.gueye@esp.com");
 
         $pole1 = new Pole;
         $pole1->setNomPole(PoleType::MACONNERIE);
@@ -54,7 +54,7 @@ class UserFixtures extends Fixture
         $chefPole1->setPrenom("Adama");
         $chefPole1->setRoles([$this::ROLE_CHEF,$this::ROLE_CHEF_POLE]);
         $chefPole1->setPassword($this->encoder->encodePassword($chefPole1,"toto"));
-        $chefPole1->setEmail("ka@example.com");
+        $chefPole1->setEmail("ka@esp.sn");
         $chefPole1->setMonPole($pole1);
 
         $chefPole2 = new ChefPole;
