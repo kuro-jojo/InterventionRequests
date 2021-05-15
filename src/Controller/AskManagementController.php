@@ -15,7 +15,9 @@ use App\Repository\DemandeInterventionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-
+/**
+ * @Route("/ask",name="app_ask")
+ */
 
 //mettre en place la liste des demande pour un agent de pole
 class AskManagementController extends AbstractController
@@ -26,7 +28,7 @@ class AskManagementController extends AbstractController
 
     /**
      * @IsGranted("ROLE_CHEF")
-     *@Route("/list", name="_list")
+     * @Route("/list", name="_list")
      * 
      */
     public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository, AgentMaintenanceRepository $agentRepository): Response
