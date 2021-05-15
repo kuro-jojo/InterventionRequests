@@ -2,13 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\ChefService;
+use App\Entity\Contact;
 use App\Entity\User;
 use App\Entity\ChefPole;
 use App\DBAL\Types\StatutType;
 use App\Entity\DemandeIntervention;
+use App\Form\ContactType;
 use App\Form\DemandeInterventionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Message;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\AgentMaintenanceRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,9 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
-/**
- * @Route("/ask/", name="app_ask")
- */
+
 //mettre en place la liste des demande pour un agent de pole
 class AskManagementController extends AbstractController
 {
@@ -84,5 +88,34 @@ class AskManagementController extends AbstractController
         }
         $em->flush();
         return $this->redirectToRoute('app_ask_list');
+    }
+
+    /**
+     * @Route("/contact", name="app_contact")
+     */
+    public function contactUs(Request $request,  MailerInterface $mailer): Response
+    {
+        $contact = new Contact();
+        $form = $this->createForm(ContactType::class, $contact);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            //mise en place de l'envoie de l'email
+            $mail = (new Email())
+                ->from(''.$contact->getEmail())
+                ->to('doumgouyesh@gmail.com')
+                ->subject('Contact')
+                ->html("<h1>Demande d'information</h1>
+<p>Email: ".$contact->getEmail()."<br>Nom: ".$contact->getNom()." ".$contact->getPrenom()."</p>
+<p>".$contact->getMessage()."</p>");
+
+            $mailer->send($mail);
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('ask_management/contact.html.twig', [
+            'form' => $form->createView(),
+        ]);
+
     }
 }

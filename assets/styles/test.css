@@ -219,6 +219,9 @@ textarea.input100 {
     .rs1-wrap-input100 {
         width: 100%
     }
+    .newligne{
+        margin-bottom: 40px;
+    }
 }
 
 @media(max-width:576px) {
@@ -588,3 +591,4 @@ textarea.input100 {
         padding: 15px 0 0
     }
 }
+
