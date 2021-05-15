@@ -12,6 +12,7 @@ use App\Repository\AgentMaintenanceRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\DemandeInterventionRepository;
+use Flasher\Prime\FlasherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -33,25 +34,26 @@ class AskManagementController extends AbstractController
      */
     public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository, AgentMaintenanceRepository $agentRepository): Response
     {
-        $demandes = new DemandeIntervention();
-        $form = $this->createForm(DemandeInterventionType::class, $demandes);
-        $form->handleRequest($request);
-
+        $demandes = [];
         //Agent for this specific pole
         $agents = null;
+        //Contains all available agent on a specific request
+        $agentsAvailable = array();
 
         $chef = $security->getUser();
         if ($this->isGranted($this::ROLE_CHEF_POLE)) {
             $monPole = $chef->getMonPole();
             $demandes = $askRepository->findByPoleConcerne($monPole);
             $agents = $agentRepository->findByPole($monPole);
-            // recurperons les traiteurs de demande
+
+            // For each , we assign available agent on the pole
             foreach ($demandes as $demande) {
+                $agentsAvailable[$demande->getId()]= array();
                 //verifions si un agent traite la demande 
-                foreach ($agents as $key => $agent) {
+                foreach ($agents as $agent) {
                     //vérifier si l'agent is in $demande->getTraiteursDemande()
-                    if ($demande->getTraiteursDemande()->contains($agent)) {
-                        unset($agents[$key]);
+                    if (!$demande->getTraiteursDemande()->contains($agent)) {
+                        array_push($agentsAvailable[$demande->getId()],$agent);
                     }
                 }
             }
@@ -59,9 +61,8 @@ class AskManagementController extends AbstractController
             $demandes = $askRepository->findAll();
         }
         return $this->render('ask_management/listDemandes.html.twig', [
-            'form' => $form->createView(),
             'demandes' => $demandes,
-            'agents' => $agents
+            'agents' => $agentsAvailable
         ]);
     }
 
@@ -69,7 +70,7 @@ class AskManagementController extends AbstractController
      * 
      * @Route("/assign/{id<\d+>}", name="_assign")
      */
-    public function assignAsk(DemandeIntervention $demande, Request $request, AgentMaintenanceRepository $agentRepository, EntityManagerInterface $em): Response
+    public function assignAsk(DemandeIntervention $demande, Request $request, AgentMaintenanceRepository $agentRepository, EntityManagerInterface $em,FlasherInterface $flasher): Response
     {
         $agentIds = $request->request->all();
         foreach ($agentIds as $id) {
@@ -80,6 +81,7 @@ class AskManagementController extends AbstractController
         if ($demande->getStatut() != StatutType::EN_COURS) {
             $demande->setStatut(StatutType::EN_COURS);
         }
+        $flasher->addInfo("L'intervention a bien été assignée!!!");
         $em->flush();
         return $this->redirectToRoute('app_ask_list');
     }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210513173305 extends AbstractMigration
+final class Version20210515174948 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,7 +30,7 @@ final class Version20210513173305 extends AbstractMigration
         $this->addSql('CREATE TABLE chef_pole (id INT NOT NULL, mon_pole_id INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_E1AD5823147C6289 ON chef_pole (mon_pole_id)');
         $this->addSql('CREATE TABLE chef_service (id INT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE demande_intervention (id INT NOT NULL, pole_concerne_id INT NOT NULL, nom_demandeur VARCHAR(255) NOT NULL, email_demandeur VARCHAR(255) NOT NULL, contact_demandeur VARCHAR(255) NOT NULL, fonction VARCHAR(255) NOT NULL, priorite VARCHAR(255) CHECK(priorite IN (\'Urgent\', \'Peu urgente\', \'Pas urgente\')) NOT NULL, departement VARCHAR(255) CHECK(departement IN (\'BatimentDirectional\', \'BatimentACP\', \'GenieCivil\', \'Gestion\', \'GenieChimique\', \'GenieElec\', \'GenieMeca\', \'GenieInf\', \'RessourceHumaines\', \'Caisse\', \'LPAO\', \'LERG\', \'LMAGI\', \'LER\', \'SID\', \'Scolarite\', \'CRENT\', \'LAE\', \'LIMBI\', \'LIRT\', \'Autre\')) NOT NULL, causeDefaillance VARCHAR(255) CHECK(causeDefaillance IN (\'UsureNormal\', \'DefautUtilisateur\', \'DefautProduit\', \'Autres\')) NOT NULL, description TEXT DEFAULT NULL, date_demande TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, statut VARCHAR(255) CHECK(statut IN (\'EN_ATTENTE\', \'EN_COURS\', \'OK\')) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE demande_intervention (id INT NOT NULL, pole_concerne_id INT NOT NULL, nom_demandeur VARCHAR(255) NOT NULL, email_demandeur VARCHAR(255) NOT NULL, contact_demandeur VARCHAR(255) NOT NULL, fonction VARCHAR(255) NOT NULL, priorite VARCHAR(255) CHECK(priorite IN (\'Urgent\', \'PeuUrgent\', \'PasUrgent\')) NOT NULL, departement VARCHAR(255) CHECK(departement IN (\'BatimentDirectional\', \'BatimentACP\', \'GenieCivil\', \'Gestion\', \'GenieChimique\', \'GenieElec\', \'GenieMeca\', \'GenieInf\', \'RessourceHumaines\', \'Caisse\', \'LPAO\', \'LERG\', \'LMAGI\', \'LER\', \'SID\', \'Scolarite\', \'CRENT\', \'LAE\', \'LIMBI\', \'LIRT\', \'Autre\')) NOT NULL, causeDefaillance VARCHAR(255) CHECK(causeDefaillance IN (\'UsureNormal\', \'DefautUtilisateur\', \'DefautProduit\', \'Autres\')) NOT NULL, description TEXT DEFAULT NULL, date_demande TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, statut VARCHAR(255) CHECK(statut IN (\'EN_ATTENTE\', \'EN_COURS\', \'OK\')) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_86D186D1D1F1831B ON demande_intervention (pole_concerne_id)');
         $this->addSql('COMMENT ON COLUMN demande_intervention.priorite IS \'(DC2Type:Priorite)\'');
         $this->addSql('COMMENT ON COLUMN demande_intervention.departement IS \'(DC2Type:DepartementType)\'');
