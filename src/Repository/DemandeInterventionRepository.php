@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\DemandeIntervention;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -64,4 +65,6 @@ class DemandeInterventionRepository extends ServiceEntityRepository
     public function findAskQuery(): QueryBuilder{
         return $this->createQueryBuilder('p');
     }
+
+    
 }

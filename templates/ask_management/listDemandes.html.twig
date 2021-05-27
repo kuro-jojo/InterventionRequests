@@ -4,134 +4,134 @@
 {% endblock %}
 
 {% block stylesheets %}
-	{{parent()}}
-	<style>
-		body {
-			overflow: hidden;
-		}
-		th {
-			text-align: center;
-		}
-		td,
-		th {
-			text-align: center !important;
-			vertical-align: unset !important;
-		}
-		.table-responsive {
-			overflow: auto;
-			max-width: 95vw;
-			margin-top: 2em;
-			margin-left: 10%;
-		}
-		.service {
-			margin-left: 2%;
+  {{parent()}}
+  <style>
+    body {
+      overflow: hidden;
+    }
+    th {
+      text-align: center;
+    }
+    td,
+    th {
+      text-align: center !important;
+      vertical-align: unset !important;
+    }
+    .table-responsive {
+      overflow: auto;
+      max-width: 95vw;
+      margin-top: 2em;
+      margin-left: 10%;
+    }
+    .service {
+      margin-left: 2%;
 
-		}
-		.header {
-			position: sticky;
-			top: 0;
-		}
-		.assign {
-			visibility: hidden;
-		}
-	</style>
+    }
+    .header {
+      position: sticky;
+      top: 0;
+    }
+    .assign {
+      visibility: hidden;
+    }
+  </style>
 {% endblock %}
 
 {% block javascripts %}
-	{{parent()}}
-	<script>
-		function display(id, visibility) {
-if (visibility == 1) {
-document.getElementById('assign-' + id).style.visibility = "visible";
-} else {
-document.getElementById('assign-' + id).style.visibility = "hidden";
-}
-}
-	</script>
+  {{parent()}}
+  <script>
+    function display(id, visibility) {
+      if (visibility == 1) {
+        document.getElementById('assign-' + id).style.visibility = "visible";
+      } else {
+        document.getElementById('assign-' + id).style.visibility = "hidden";
+      }
+    }
+  </script>
 {% endblock %}
 {% block body %}
-	{% set service = "" %}
-	{% if is_granted("ROLE_CHEF_SERVICE") %}
-		{% set service = "service" %}
-	{% endif %}
-	{% include "layouts/_nav.html.twig" %}
-	<div class=" mt-4">
-		<h1 class="text-center">Liste des demandes</h1>
-		<div class="table-responsive {{service}}">
-			<table class="table table-hover table-bordered">
-				<thead class="table-dark">
-					<tr>
-						<th class="header" scope="col">Statut</th>
-						<th class="header" scope="col">Numéro demande</th>
-						<th class="header" scope="col">Horodateur</th>
-						<th class="header" scope="col">Demandeur</th>
-						<th class="header" scope="col">Contact</th>
-						<th class="header" scope="col">Fonction</th>
-						<th class="header" scope="col">Type de défaillance</th>
-						<th class="header" scope="col">Priorité</th>
-						<th class="header" scope="col">Cause defaillance</th>
-						<th class="header" scope="col">Département ou service</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for demande in demandes %}
-						<tr onmouseover="display({{demande.id}},1)" onmouseout="display({{demande.id}},0)">
-							<td>{{demande.statut|readable_enum}}</td>
-							<td>{{demande.id}}</td>
-							<td>{{demande.dateDemande | date('d/m/y à H:i:s') }}</td>
-							<td>{{ demande.nomDemandeur }}</td>
-							<td>{{demande.contactDemandeur}}</td>
-							<td>{{demande.fonction}}</td>
-							<td>{{demande.poleConcerne.nomPole}}</td>
-							<td>{{demande.priorite | enum_constant}}</td>
-							<td>{{ demande.causeDefaillance | readable_enum }}</td>
-							<td>{{ demande.departement | readable_enum }}</td>
-							{% if is_granted('ROLE_CHEF_POLE') %}
-								<td id="assign-{{demande.id}}" class="assign">
-									<a href="#" class="text-dark btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#assignModal">Assigner à une équipe</a>
-								</td>
-								<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-scrollable">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Nos agents</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-											</div>
-											{% if agents is not empty %}
-												<div class="modal-body">
-													<form action="{{path('app_ask_assign',{id:demande.id})}}" method="post">
-														{% for agent in agents %}
-															<div class="form-check">
-																<input class="form-check-input" type="checkbox" value="{{agent.id}}" id="inputCheck-{{agent.id}}" name="agent-{{agent.id}}">
-																<label class="form-check-label" for="inputCheck-{{agent.id}}">
-																	{{agent.nom}}
-																	{{agent.prenom}}
-																</label>
-															</div>
-														{% endfor %}
-														<div class="d-grid gap-2 col-6 mx-auto mt-3">
-															<button type="submit" class="btn btn-outline-primary">Assigner</button>
-														</div>
-													</form>
-												</div>
-											{% else %}
-												<div class="modal-body text-center">
+  {% set service = "" %}
+  {% if is_granted("ROLE_CHEF_SERVICE") %}
+    {% set service = "service" %}
+  {% endif %}
+  {% include "layouts/_nav.html.twig" %}
+  <div class=" mt-4 mb-4">
+    <h1 class="text-center">Liste des demandes</h1>
+    <div class="table-responsive {{service}}">
+      <table class="table table-hover table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th class="header" scope="col">Statut</th>
+            <th class="header" scope="col">Numéro demande</th>
+            <th class="header" scope="col">Horodateur</th>
+            <th class="header" scope="col">Demandeur</th>
+            <th class="header" scope="col">Contact</th>
+            <th class="header" scope="col">Fonction</th>
+            <th class="header" scope="col">Type de défaillance</th>
+            <th class="header" scope="col">Priorité</th>
+            <th class="header" scope="col">Cause defaillance</th>
+            <th class="header" scope="col">Département ou service</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for demande in demandes %}
+            <tr onmouseover="display({{demande.id}},1)" onmouseout="display({{demande.id}},0)">
+              <td>{{demande.statut|readable_enum}}</td>
+              <td>{{demande.id}}</td>
+              <td>{{demande.dateDemande | date('d/m/y à H:i:s') }}</td>
+              <td>{{ demande.nomDemandeur }}</td>
+              <td>{{demande.contactDemandeur}}</td>
+              <td>{{demande.fonction}}</td>
+              <td>{{demande.poleConcerne.nomPole}}</td>
+              <td>{{demande.priorite | enum_constant}}</td>
+              <td>{{ demande.causeDefaillance | readable_enum }}</td>
+              <td>{{ demande.departement | readable_enum }}</td>
+              {% if is_granted('ROLE_CHEF_POLE') %}
+                <td id="assign-{{demande.id}}" class="assign">
+                  <a href="#" class="text-dark btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#assignModal">Assigner à une équipe</a>
+                </td>
+                <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Nos agents</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      {% if agents is not empty %}
+                        <div class="modal-body">
+                          <form action="{{path('app_ask_assign',{id:demande.id})}}" method="post">
+                            {% for agent in agents %}
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="{{agent.id}}" id="inputCheck-{{agent.id}}" name="agent-{{agent.id}}">
+                                <label class="form-check-label" for="inputCheck-{{agent.id}}">
+                                  {{agent.nom}}
+                                  {{agent.prenom}}
+                                </label>
+                              </div>
+                            {% endfor %}
+                            <div class="d-grid gap-2 col-6 mx-auto mt-3">
+                              <button type="submit" class="btn btn-outline-primary">Assigner</button>
+                            </div>
+                          </form>
+                        </div>
+                      {% else %}
+                        <div class="modal-body text-center">
 
-													Aucun agent dans le service ou disponible
-												</div>
-												<div class="modal-footer justify-content-center">
-													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-												</div>
-											{% endif %}
-										</div>
-									</div>
-								</div>
-							{% endif %}
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
+                          Aucun agent dans le service ou disponible
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 {% endblock %}
