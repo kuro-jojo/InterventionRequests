@@ -16,7 +16,7 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "heroku-postbuild": "npm install && encore production --progress"
+        "heroku-postbuild": "encore production --progress"
     },
     "dependencies": {
         "@popperjs/core": "^2.9.2",
