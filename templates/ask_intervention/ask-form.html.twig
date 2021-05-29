@@ -2,25 +2,16 @@
 
 {% block title %}Demande Intervention
 {% endblock %}
-{% block stylesheets %}
-	{{parent()}}
-	<style>
-		body {
-			background-color: #edeef0;
-		}
-		.contact100-form-title{
-			font-size:2em
-		}
-	</style>
-{% endblock %}
+ 
 {% block body %}
+
 	<div class="container-contact100">
 		<div class="wrap-contact100 pt-1">
 			{{ form_start(form,{
             'attr' : {
             }
         }) }}
-			<div class="mb-3">
+			<div class="mb-3 text-center">
 				<img src="{{asset('img/ucad.jpg')}}" alt="Logo ucad" style="width:200px">
 			</div>
 			<span class="contact100-form-title">
@@ -51,7 +42,8 @@
 			<div class="row mt-3">
 				<div class="col-md-6">
 					<label for="demande_intervention_emailDemandeur" class="form-label">Adresse email<span class="text-danger">
-						*</span></label>
+							*</span>
+					</label>
 
 					{{form_widget(form.emailDemandeur)}}
 					{{form_errors(form.emailDemandeur)}}
@@ -107,9 +99,9 @@
 				{{form_errors(form.departement)}}
 			</div>
 			<div class="mt-5 d-grid gap-2 col-6 mx-auto">
-				<button type="submit" class="btn btn-outline-primary">Envoyer la demande</button>
+				<button type="submit" class="btn btn-outline-main">Envoyer la demande</button>
 			</div>
 			{{ form_end(form) }}
 		</div>
 	</div>
-	{% endblock %}
+{% endblock %}

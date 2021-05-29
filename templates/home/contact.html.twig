@@ -1,111 +1,114 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contacter le service{% endblock %}
+{% block title %}Contacter le service
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
+	{{ parent() }}
+	<style>
 
-        *{
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-        .contact{
-            background-size: 100%;
-            width: 100%;
-            height: 100vh;
-        }
-        .head{
-            background-color: darkblue;
-            border-radius: 5px;
-            margin-top: -40px;
-        }
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		body {
+			overflow: hidden;
+		}
+    
+		.head {
+			background-color: var(--main-color);
+			border-radius: 5px;
+			margin-top: -40px;
+		}
 
-        .effect-1{
-            border: 0;
-            outline: none;
-            width: 100%;
-            padding: 7px 0;
-            border-bottom: 1px solid #ccc;
-            border-radius: 0;
-        }
+		.effect-1 {
+			border: 0;
+			outline: none;
+			width: 100%;
+			padding: 7px 0;
+			border-bottom: 1px solid #ccc;
+			border-radius: 0;
+		}
 
-        .effect-1 ~ .Focus-border{
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 4px;
-            background-color: darkblue;
-            transition: 0.4s;
-            border-radius: 0;
-        }
+		.effect-1 ~ .Focus-border {
+			position: absolute;
+			bottom: 0;
+			left: 50%;
+			width: 0;
+			height: 4px;
+			background-color: var(--main-color);
+			transition: 0.4s;
+			border-radius: 0;
+		}
 
-        .effect-1:focus ~ .Focus-border
-        {
-            width: 100%;
-            transition: 0.4s;
-            left: 0;
-        }
-        .effect-1::-webkit-input-placeholder{
-            vertical-align: bottom;
-        }
-    </style>
+		.effect-1:focus ~ .Focus-border {
+			width: 100%;
+			transition: 0.4s;
+			left: 0;
+		}
+		.effect-1::-webkit-input-placeholder {
+			vertical-align: bottom;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
-    {% include "layouts/_nav.html.twig" %}
-    <section class="contact">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-6 mx-auto">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="head text-center text-white py-3">
-                                        <h3>Contacter Nous</h3>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form p-3">
-                                {{ form_start(form) }}
-                                <div class="row my-5">
-                                    <div class="col-md-6 newligne">
-                                        {{ form_widget(form.nom, {'attr': {'class': 'effect-1', 'placeholder' : 'Nom'}}) }}
-                                        <span class="Focus-border"></span>
-                                    </div>
-                                    <div class="col-md-6">
-                                        {{ form_widget(form.prenom, {'attr': {'class': 'effect-1', 'placeholder' : 'Prénom'}}) }}
-                                        <span class="Focus-border"></span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        {{ form_widget(form.email, {'attr': {'class': 'effect-1', 'placeholder' : 'Adresse email'}}) }}
-                                        <span class="Focus-border"></span>
-                                    </div>
-                                </div>
-                                <div class="row pt-5">
-                                    <div class="col-lg-12">
-                                        {{ form_widget(form.message, {'attr': {'class': 'effect-1', 'placeholder' : 'Votre message'}}) }}
-                                        <span class="Focus-border"></span>
-                                        {{form_errors(form.message)}}
-                                    </div>
-                                </div>
-                                <div class="row pt-4">
-                                    <div class="col-lg-6">
-                                        <button class="btn btn-primary" type="submit">Envoyer</button>
-                                    </div>
-                                </div>
-                                {{ form_end(form) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+	{% include "layouts/_nav.html.twig" %}
+	<section class="contact">
+		<div class="container py-5">
+			<div class="row">
+				<div class="col-lg-6 mx-auto">
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="head text-center text-white py-3">
+										<h3>Contacter Nous</h3>
+									</div>
+								</div>
+							</div>
+							<div class="form p-3">
+								{{ form_start(form) }}
+								<div class="row my-5">
+									<div class="col-md-6 newligne">
+										{{ form_widget(form.nom, {'attr': {'class': 'effect-1', 'placeholder' : 'Nom'}}) }}
+										<span class="Focus-border"></span>
+									</div>
+									<div class="col-md-6">
+										{{ form_widget(form.prenom, {'attr': {'class': 'effect-1', 'placeholder' : 'Prénom'}}) }}
+										<span class="Focus-border"></span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-12">
+										{{ form_widget(form.email, {'attr': {'class': 'effect-1', 'placeholder' : 'Adresse email'}}) }}
+										<span class="Focus-border"></span>
+									</div>
+								</div>
+								<div class="row pt-5">
+									<div class="col-lg-12">
+										{{ form_widget(form.message, {'attr': {'class': 'effect-1', 'placeholder' : 'Votre message'}}) }}
+										<span class="Focus-border"></span>
+										{{form_errors(form.message)}}
+									</div>
+								</div>
+								<div class="row pt-4">
+									<div class="col-lg-6">
+										<button class="btn btn-main" type="submit">Envoyer</button>
+									</div>
+								</div>
+								{{ form_end(form) }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{% block footer %}
+		{% include "/layouts/_footer.html.twig" %}
+	{% endblock %}
 
 {% endblock %}

@@ -6,26 +6,28 @@
 {% block body %}
 	<style>
 		body {
-			overflow: hidden;
+			overflow: auto;
 		}
+		
 	</style>
+
 	{% include "layouts/_nav.html.twig" %}
 	{{flasher_render()}}
-	<div class="px-4 pt-5 my-5 text-center ">
+	<div class="px-4 my-5 d-flex align-items-center flex-column ">
+		<div class="mb-2"><img src="{{asset('img/ucad.jpg')}}" alt="logo ucad" width="200" height="200"></div>
 		<h1 class="display-4 fw-bold">Bienvenue sur le site du service de maintenance</h1>
 		<div class="col-lg-6 mx-auto mt-5">
 			<p class="lead mb-4">Ce site a été conçu pour mieux gérer vos demandes d'intervention au sein de l'Ecole Supérieure Polytechnique de Dakar.</p>
 			<div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-				<a href="{{path('app_ask_intervention')}}" class="btn btn-primary btn-lg px-4 me-sm-3">Faire ma demande</a>
+				<a href="{{path('app_ask_intervention')}}" class="btn btn-main btn-lg px-4 me-sm-3">Faire ma demande</a>
 				<a href="{{ path('app_contact') }}" class="btn btn-outline-secondary btn-lg px-4">Contacter le service</a>
 			</div>
 		</div>
-		<hr>
-		{# <div class="overflow-hidden" style="max-height: 40vh;">
-					<div class="container px-5">
-						<img src="{{asset('img/ucad.jpg')}}" class="border rounded-3 shadow-lg mb-4" alt="Example image" width="200" height="200" loading="lazy">
-					</div>
-				</div> #}
+
 	</div>
+
+	{% block footer %}
+		{% include "/layouts/_footer.html.twig" %}
+	{% endblock %}
 
 {% endblock %}
