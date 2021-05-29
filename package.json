@@ -16,8 +16,7 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "heroku-prebuild": "",
-        "heroku-postbuild": "encore production --progress && yarn install --force "
+        "heroku-postbuild": "yarn install --force "
     },
     "dependencies": {
         "@popperjs/core": "^2.9.2",
