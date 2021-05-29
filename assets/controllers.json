@@ -1,11 +1,6 @@
 {
     "controllers": {
-        "@symfony/ux-chartjs": {
-            "chart": {
-                "enabled": true,
-                "fetch": "eager"
-            }
-        }
+
     },
     "entrypoints": []
 }
