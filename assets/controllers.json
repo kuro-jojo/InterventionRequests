@@ -1,6 +1,6 @@
 {
     "controllers": {
-        "/node_modules/@symfony/ux-chartjs": {
+        "./node_modules/@symfony/ux-chartjs": {
             "chart": {
                 "enabled": true,
                 "fetch": "eager"
