@@ -15,6 +15,7 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
+        "heroku-prebuild": "yarn install --force",
         "heroku-postbuild": "encore production --progress "
     },
     "dependencies": {
