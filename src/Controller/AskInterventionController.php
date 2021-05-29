@@ -41,7 +41,7 @@ class AskInterventionController extends AbstractController
             // $flashy->info("Votre demande a bien été envoyée !");
             return $this->redirectToRoute('app_home');
         }
-        return $this->render('ask_intervention/index.html.twig', [
+        return $this->render('ask_intervention/ask-form.html.twig', [
             'form' => $form->createView(),
         ]);
     }

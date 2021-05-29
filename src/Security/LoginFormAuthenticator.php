@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -74,7 +75,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
         if (!$user) {
-            // fail authentication with a custom error
+            
             throw new CustomUserMessageAuthenticationException('Email could not be found.');
         }
 
@@ -102,6 +103,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         $this->flasher->addSuccess("Connexion réussie!");
 
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
+    }
+
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception){
+        
+        $this->flasher->addError("Informations incorrectes!");
+        return new RedirectResponse($this->urlGenerator->generate('app_login'));
+
+
     }
 
     protected function getLoginUrl()

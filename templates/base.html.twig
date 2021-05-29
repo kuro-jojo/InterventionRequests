@@ -20,31 +20,21 @@
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
 		<style>
-			.form-control:focus,
-			.form-control.is-invalid:focus {
-				outline: none !important;
-				box-shadow: none;
-			}
-			.badge-danger {
-				background-color: #e74a3b;
-			}
-			.flashy__body {
-				text-decoration: none;
-			}
-			.flashy {
-				margin-top: 90px;
-			}
+
+			
 		</style>
+
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</head>
-	<body>
+	<body class="d-flex flex-column h-100">
 		<!-- Flashy depends on jQuery -->
 		<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
 		{# {{ include('@MercurySeriesFlashy/flashy.html.twig') }} #}
-
+		<script src="https://kit.fontawesome.com/bca57ce0fe.js" crossorigin="anonymous"></script>
 		{% block body %}{% endblock %}
+
 	</body>
 </html>

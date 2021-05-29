@@ -68,7 +68,6 @@ li {
 
 .container-contact100 {
     width: 100%;
-    min-height: 100vh;
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
@@ -104,7 +103,7 @@ li {
     display: block;
     width: 100%;
     font-family: Chango;
-    font-size: 39px;
+    font-size: 2em;
     color: #333;
     line-height: 1.2;
     text-align: center;
@@ -219,7 +218,7 @@ textarea.input100 {
     .rs1-wrap-input100 {
         width: 100%
     }
-    .newligne{
+    .newligne {
         margin-bottom: 40px;
     }
 }
@@ -591,4 +590,3 @@ textarea.input100 {
         padding: 15px 0 0
     }
 }
-

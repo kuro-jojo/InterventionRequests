@@ -1,2 +1,57 @@
 @import "~bootstrap/dist/css/bootstrap.css";
-@import "./test.css";
+@import "ask-form.css";
+:root {
+    --main-color: #2993cd !important;
+}
+
+.btn-main {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.btn-outline-main {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+.btn-outline-main:hover {
+    background-color: var(--main-color);
+    color: #fff;
+}
+
+.form-control:focus,
+.form-control.is-invalid:focus {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.badge-danger {
+    background-color: #e74a3b;
+}
+
+.flashy__body {
+    text-decoration: none;
+}
+
+.flashy {
+    margin-top: 90px;
+}
+
+.fa {
+    color: #FFF;
+    margin: 0 0.5em 0.5em 0;
+}
+
+.nav-link {
+    font-size: 18px !important;
+}
+
+footer li {
+    color: #FFF;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+footer a {
+    text-decoration: none;
+}
