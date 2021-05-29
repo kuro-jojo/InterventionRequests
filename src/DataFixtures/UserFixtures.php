@@ -122,7 +122,7 @@ class UserFixtures extends Fixture
         $manager->persist($agent1);
         $manager->persist($agent2); 
         $manager->persist($agent3);
-         $manager->persist($agent4);
+        $manager->persist($agent4);
         $manager->flush();
     }
 }
