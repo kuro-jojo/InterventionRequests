@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\DBAL\Types\StatutType;
 use App\Entity\DemandeIntervention;
@@ -61,7 +61,7 @@ class AskManagementController extends AbstractController
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
         }
-        return $this->render('ask_management/listDemandes.html.twig', [
+        return $this->render('admin/ask_management/listDemandes.html.twig', [
             'demandes' => $demandes,
             'agents' => $agentsAvailable
         ]);

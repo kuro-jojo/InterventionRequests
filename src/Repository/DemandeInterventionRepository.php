@@ -60,6 +60,24 @@ class DemandeInterventionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getNumberOfAsk() : int{
+
+        return $this->createQueryBuilder('a')
+            ->select('count(a)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getNumberOfAskByStatus($status) : int{
+
+        return $this->createQueryBuilder('a')
+            ->select('count(a)')
+            ->andWhere('a.statut = :val')
+            ->setParameter('val',$status)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //creation d'une requête
     public function findAskQuery(): QueryBuilder{
         return $this->createQueryBuilder('p');

@@ -102,7 +102,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         }
         $this->flasher->addSuccess("Connexion réussie!");
 
-        return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        return new RedirectResponse($this->urlGenerator->generate('app_admin'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception){

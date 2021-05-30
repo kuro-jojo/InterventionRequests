@@ -1,38 +1,32 @@
 <nav class="navbar navbar-expand-lg navbar-dark p-3 bg-dark text-white">
 	<div class="container-fluid justify-content-between">
-
 		<div class="">
+		{% if app.user is not null %}
+			<a class="navbar-brand" href="{{path('app_admin')}}">ESP - Maintenance - Administration</a>
+		{% else %}
 			<a class="navbar-brand" href="{{path('app_home')}}">ESP - Maintenance</a>
+			
+		{% endif %}
 		</div>
-		
+
 		<div class=" collapse navbar-collapse justify-content-center align-items-center justify-content-md-center" id="navbarCollapse">
 			<div class="">
 				<ul class="navbar-nav col-12 col-lg-auto me-lg-auto mb-2 mb-md-0">
 					<li>
 						<a href="{{path('app_home')}}" class="nav-link px-2 text-secondary">Accueil</a>
 					</li>
-					{% if app.user is null %}
-						<li>
-							<a href="{{path('app_ask_intervention')}}" class="nav-link px-2 text-white">Faire une demande
-							</a>
-						</li>
-					{% else %}
-						<li>
-							<a href="{{path('app_ask_list')}}" class="nav-link px-2 text-white">Liste des interventions</a>
-						</li>
-						{% if 'ROLE_CHEF_SERVICE' in app.user.roles %}
-							<li>
-								<a href="#" class="nav-link px-2 text-white">Statistiques</a>
-							</li>
-							{%endif%}
-						{% endif %}
-						<li>
-							<a href="#" class="nav-link px-2 text-white">A propos</a>
-						</li>
-					</ul>
-				</div>
+					<li>
+						<a href="{{path('app_ask_intervention')}}" class="nav-link px-2 text-white">Faire une demande
+						</a>
+					</li>
 
+					<li>
+						<a href="#" class="nav-link px-2 text-white">A propos</a>
+					</li>
+				</ul>
 			</div>
+
+		</div>
 		{% if app.user is null %}
 			<div class="text-end">
 				<a href="{{path('app_login')}}" class="btn btn-outline-main me-2">Connexion</a>
@@ -45,6 +39,5 @@
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		</div>
 	</div>
-</nav>
+</div></nav>
