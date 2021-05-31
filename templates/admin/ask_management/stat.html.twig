@@ -1,34 +1,225 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Statistiques
 {% endblock %}
+
 {% block stylesheets %}
-  {{parent()}}
-  <style>
-    .statText {
-      text-align: center;
-      font-style: italic;
-      font-weight: bold;
-      text-decoration: underline;
-    }
-  </style>
-{%endblock %}
+	{{parent()}}
+	<style>
+		.statText {
+			text-align: center;
+			font-style: italic;
+			font-weight: bold;
+			text-decoration: underline;
+		}
+		.menu {
+			position: relative;
+			top: 200px;
+			left: 100px;
+			height: 100%
+		}
+		#cause,
+		#typeDefaillance,
+		#priorite {
+			display: none;
+		}
+	</style>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+
+		function chart1() {
+var ctx1 = document.getElementById('myChart1').getContext('2d');
+var ctx2 = document.getElementById('myChart2').getContext('2d');
+var ctx3 = document.getElementById('myChart3').getContext('2d');
+var ctx4 = document.getElementById('myChart4').getContext('2d');
+
+// mise en place pour le statut des demandes
+var myChart1 = new Chart(ctx1, {
+type: 'bar',
+data: {
+labels: [
+'En Attente', 'En Cours', 'OK'
+],
+datasets: [
+{
+label: "Statut des demandes",
+data: [
+{{ enAttenteNbre }}, {{ encoursNbre }}, {{ okNbre }}
+],
+backgroundColor: ['rgba(37,23,120,0.67)'],
+borderColor: ['rgba(255,255,255,0.93)']
+}
+]
+},
+options: {
+scales: {
+y: {
+beginAtZero: true
+}
+}
+}
+});
+
+// mise en place pour les causes de défaillances
+var myChart2 = new Chart(ctx2, {
+type: 'pie',
+data: {
+labels: [
+'Usure Normale', 'Défaut utilisateur', 'Défaut produit', 'Autres'
+],
+datasets: [
+{
+label: "Causes des défaillances",
+data: [
+{{ dataCauses[0] }}, {{ dataCauses[1] }}, {{ dataCauses[2] }}, {{ dataCauses[3] }}
+],
+backgroundColor: [
+'rgba(43,14,203,0.88)', 'rgba(75,149,62,0.88)', 'rgba(123,81,49,0.88)', 'rgb(253,253,254)',
+],
+}
+]
+},
+options: {
+scales: {
+y: {
+beginAtZero: true
+}
+}
+}
+});
+
+// mise en place pour les types de défaillances
+var myChart3 = new Chart(ctx3, {
+type: 'doughnut',
+data: {
+labels: [
+'Ménuiserie',
+'Electricité',
+'Maçonnerie',
+'Climatisation',
+'Plomberie'
+],
+datasets: [
+{
+label: "Types de défaillances des défaillances",
+data: [
+{{ typeData[0] }},
+{{ typeData[1] }},
+{{ typeData[2] }},
+{{ typeData[3] }},
+{{ typeData[4] }}
+],
+backgroundColor: [
+'rgba(43,14,203,0.88)',
+'rgba(75,149,62,0.88)',
+'rgba(123,81,49,0.88)',
+'rgb(253,253,254)',
+'rgba(123,49,105,0.88)',
+],
+ 
+}
+]
+},
+options: {
+scales: {
+y: {
+beginAtZero: true
+}
+}
+}
+});
+
+// mise en plac pour les priorités
+var myChart4 = new Chart(ctx4, {
+type: 'polarArea',
+data: {
+labels: [
+'Urgent', 'Peu Urgent', 'Pas Urgent',
+],
+datasets: [
+{
+label: "Priorité des demandes",
+data: [
+{{ prioriteData[0] }}, {{ prioriteData[1] }}, {{ prioriteData[2] }}
+],
+backgroundColor: [
+'rgba(103,81,229,0.27)', 'rgba(86,113,82,0.27)', 'rgba(113,227,190,0.27)',
+],
+
+}
+]
+},
+options: {
+scales: {
+y: {
+beginAtZero: true
+}
+}
+}
+});
+
+
+};
+
+function displayChart(type) {
+var typeDom = document.querySelector('#' + type);
+var chartDom = document.querySelectorAll('.chart');
+
+chartDom.forEach(chart => {
+
+chart.style.display = 'none';
+});
+
+typeDom.style.display = 'block';
+}
+
+document.addEventListener("DOMContentLoaded", chart1);
+	</script>
+{% endblock %}
 
 {% block body %}
-  {% include "layouts/_nav.html.twig" %}
-  <div class="container mt-4 mb-4">
-    <h3 style="text-align:center">Statistiques sur les demandes</h3>
-    <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
-      {{ render_chart(chart) }}
-      <p class="statText mt-2">Statut des demandes</p>
-    </div>
-    <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
-      {{ render_chart(chart2) }}
-      <p class="statText mt-2">Cause de défaillance des démandes</p>
-    </div>
-    <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
-      {{ render_chart(chart3) }}
-      <p class="statText mt-2">Priorité des demandes</p>
-    </div>
-  </div>
+	<script>
+		!function () {
+var body = document.querySelector('.dark-mode');
+body.classList.remove('dark-mode');
+}();
+	</script>
+	<div class="wrapper">
+
+		{% include "layouts/_nav_admin.html.twig" %}
+		{% include "layouts/_sidebar_admin.html.twig" %}
+		<div class="content-wrapper d-flex flex-row">
+
+
+			<div class="menu d-flex flex-column">
+				<button class="btn btn-dark mb-2" onclick="displayChart('statut')">Statut des demandes</button>
+				<button class="btn btn-dark mb-2" onclick="displayChart('cause')">Cause defaillance</button>
+				<button class="btn btn-dark mb-2" onclick="displayChart('typeDefaillance')">Type de défaillance</button>
+				<button class="btn btn-dark" onclick="displayChart('priorite')">Priorité des demandes</button>
+			</div>
+			<div class="container text-center mt-4 mb-4">
+				<h3>Statistiques sur les demandes</h3>
+				<div id="statut" class="chart col-10 mt-4">
+					<canvas id="myChart1"></canvas>
+					<p class="statText mt-2">Statut des demandes</p>
+				</div>
+				<div id="cause" class="chart col-10 mt-4">
+					<canvas id="myChart2"></canvas>
+					<p class="statText mt-2">Cause de défaillance des démandes</p>
+				</div>
+				<div id="typeDefaillance" class="chart col-10 mt-4">
+					<canvas id="myChart3"></canvas>
+					<p class="statText mt-2">Types de défaillance</p>
+				</div>
+				<div id="priorite" class="chart col-10 mt-4">
+					<canvas id="myChart4"></canvas>
+					<p class="statText mt-2">Priorité des demandes</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 {% endblock %}

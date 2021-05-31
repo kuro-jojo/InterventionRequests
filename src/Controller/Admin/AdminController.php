@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Repository\UserRepository;
+use App\Service\InterventionCount;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\DemandeInterventionRepository;
@@ -32,24 +33,23 @@ class AdminController extends AbstractController
     /**
      * @Route("/",name="")
      */
-    public function index(): Response
+    public function index(InterventionCount $interventionCount): Response
     {
-        $numberOfInterventions = $this->askRepository->getNumberOfAsk();
-        $numberOfInterventionsDone = $this->askRepository->getNumberOfAskByStatus("OK");
-        $numberOfInterventionsOnGoing = $this->askRepository->getNumberOfAskByStatus("EN_COURS");
 
-        $agents = $this->userRepository->findAll();
+        $numberOfInterventions = $interventionCount->getNumberOfAsk();
+        $numberOfInterventionsDone = $interventionCount->getNumberOfAskDone();
+        $numberOfInterventionsOnGoing = $interventionCount->getNumberOfAskOnGoing();
+        $numberOfAgents = $interventionCount->getNumberOfAgents(false);
 
-        $numberOfAgents = 0;
-        foreach ($agents as $agent) {
-            if ($this->isGranted($this::ROLE_CHEF_POLE)) {
-                if (in_array($this::ROLE_AGENT, $agent->getRoles())) {
-                    $numberOfAgents++;
-                }
-            } else {
-                $numberOfAgents++;
-            }
+        if ($this->isGranted($this::ROLE_CHEF_POLE)) {
+            $numberOfInterventions = $interventionCount->getNumberOfAsk($this->getUser()->getMonPole()->getId());
+            $numberOfInterventionsDone = $interventionCount->getNumberOfAskDone($this->getUser()->getMonPole()->getId());
+            $numberOfInterventionsOnGoing = $interventionCount->getNumberOfAskOnGoing($this->getUser()->getMonPole()->getId());
+        $numberOfAgents = $interventionCount->getNumberOfAgents(true);
+
         }
+
+       
         return $this->render('admin/index.html.twig', [
             'numberOfInterventions' => $numberOfInterventions,
             'numberOfInterventionsDone' => $numberOfInterventionsDone,

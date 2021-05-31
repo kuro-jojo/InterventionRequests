@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 use App\Entity\DemandeIntervention;
+use App\Entity\SearchAsk;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -20,22 +21,27 @@ class DemandeInterventionRepository extends ServiceEntityRepository
         parent::__construct($registry, DemandeIntervention::class);
     }
 
-    // /**
-    //  * @return DemandeIntervention[] Returns an array of DemandeIntervention objects
-    //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findAskBySearch(SearchAsk $searchAsk)
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('d');
+        if ($searchAsk->getTypeDefaillance()) {
+            $qb->andWhere('d.poleConcerne = :typeDefaillance')
+                ->setParameter('typeDefaillance', $searchAsk->getTypeDefaillance());
+        }
+
+        if ($searchAsk->getStatutDemande()) {
+            $qb->andWhere('d.statut = :statutDemande')
+                ->setParameter('statutDemande', $searchAsk->getStatutDemande());
+        }
+
+        if ($searchAsk->getPrioriteDemande()) {
+            $qb->andWhere('d.priorite = :prioriteDemande')
+                ->setParameter('prioriteDemande', $searchAsk->getPrioriteDemande());
+        }
+        
+        return $qb->getQuery();
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?DemandeIntervention
@@ -54,13 +60,15 @@ class DemandeInterventionRepository extends ServiceEntityRepository
     /**
      * @return Demande
      */
-    public function findAllAskQuery(): array {
+    public function findAllAskQuery(): array
+    {
         return $this->findAskQuery()
             ->getQuery()
             ->getResult();
     }
 
-    public function getNumberOfAsk() : int{
+    public function getNumberOfAsk(): int
+    {
 
         return $this->createQueryBuilder('a')
             ->select('count(a)')
@@ -68,18 +76,40 @@ class DemandeInterventionRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getNumberOfAskByStatus($status) : int{
+    public function getNumberOfAskByPole(int $pole_id): int
+    {
+
+        return $this->createQueryBuilder('a')
+            ->select('count(a)')
+            ->andWhere('a.poleConcerne = :val')
+            ->setParameter('val', $pole_id)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getNumberOfAskByStatus($status): int
+    {
 
         return $this->createQueryBuilder('a')
             ->select('count(a)')
             ->andWhere('a.statut = :val')
-            ->setParameter('val',$status)
+            ->setParameter('val', $status)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    //creation d'une requête
-    public function findAskQuery(): QueryBuilder{
-        return $this->createQueryBuilder('p');
+    public function getNumberOfAskByStatusByPole($status,int $pole_id): int
+    {
+
+        return $this->createQueryBuilder('a')
+            ->select('count(a)')
+            ->andWhere('a.statut = :val')
+            ->andWhere('a.poleConcerne = :id')
+            ->setParameter('id', $pole_id)
+            ->setParameter('val', $status)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
+
+ 
 }

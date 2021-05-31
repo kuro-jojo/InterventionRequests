@@ -21,14 +21,7 @@
 		.table-responsive {
 			max-width: 85vw;
 			margin-top: 2em;
-			margin-left: 10px;
 			border-right: none
-		}
-
-		.body,
-		.header {
-			border-right: 1px solid #dee2e6;
-			border-bottom: 1px solid #dee2e6
 		}
 		.assign {
 			visibility: hidden;
@@ -61,61 +54,29 @@ document.getElementById('assign-' + id).style.visibility = "hidden";
 		<div class="content-wrapper">
 			<h1 class="text-center">Liste des demandes</h1>
 
-			{% if demandes is not empty %}
 				<section class="content mt-5">
-					<div class="row">
-						<div class="col-md-3">
-							<div class="info-box">
-								
-							</div>
-							<!-- /.info-box -->
+					{{form_start(form)}}
+					<div class="row justify-content-end">
+
+						<div class="col-md-2">
+							{{ form_widget(form.typeDefaillance)}}
 						</div>
-						<!-- /.col -->
-						<div class="col-md-3">
-							<div class="info-box">
-								<span class="info-box-icon bg-teal elevation-1">
-									<i class="fas fa-check-circle"></i>
-								</span>
-
-								
-							</div>
-							<!-- /.info-box -->
+						<div class="col-md-2">
+							{{ form_widget(form.statutDemande)}}
 						</div>
-						<!-- /.col -->
-						<!-- fix for small devices only -->
-
-						<div class="col-md-3">
-							<div class="info-box">
-								<span class="info-box-icon bg-warning elevation-1">
-									<i class="fas fa-cogs"></i>
-								</span>
-
-								<div class="info-box-content">
-									
-								</div>
-								<!-- /.info-box-content -->
-							</div>
-							<!-- /.info-box -->
+						<div class="col-md-2">
+							{{ form_widget(form.prioriteDemande)}}
 						</div>
-						<!-- /.col -->
 						<div class="col-md-3">
-							<div class="info-box">
-								<span class="info-box-icon bg-light elevation-1">
-									<i class="fas fa-users"></i>
-								</span>
-
-								<div class="info-box-content">
-									
-								</div>
-								<!-- /.info-box-content -->
-							</div>
-							<!-- /.info-box -->
+							<button class="btn btn-main" type="submit">Rechercher</button>
 						</div>
 					</div>
+					{{form_end(form)}}
 				</section>
-				<div class="table-responsive {{service}}">
-					<table class="table table-bordered table-hover">
-						<thead class="">
+			{% if demandes is not empty %}
+				<div class="table-responsive {{service}} mx-auto">
+					<table class="table table- table-hover">
+						<thead class="table-main">
 							<tr>
 								<th class="header" scope="col">Statut</th>
 								<th class="header" scope="col">Numéro demande</th>
