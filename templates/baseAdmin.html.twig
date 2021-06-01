@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta
+		name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		{# <link rel="stylesheet" href="{{ asset('bundles/mercuryseriesflashy/css/flashy.css') }}"> #}
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-touch-icon.png')}}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png')}}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png')}}">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+		<title>
+			{% block title %}Administration
+			{% endblock %}
+		</title>
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('admin') }}
+		{% endblock %}
+		<style>
+			#flasher-container-top-right {
+				top: 10% !important;
+			}
+		
+		</style>
+
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('admin') }}
+		{% endblock %}
+	</head>
+	<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+	<div class="wrapper">
+
+	{{flasher_render()}}
+		<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+		{# {{ include('@MercurySeriesFlashy/flashy.html.twig') }} #}
+		<script src="https://kit.fontawesome.com/bca57ce0fe.js" crossorigin="anonymous"></script>
+		{% block body %}{% endblock %}
+		</div>
+
+	</body>
+</html>

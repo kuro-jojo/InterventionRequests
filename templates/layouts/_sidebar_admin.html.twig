@@ -1,0 +1,78 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+	<a href="{{path('app_home')}}" class="brand-link">
+		<img src="{{asset('img/ucad.jpg')}}" alt="Ucad logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+		<span class="brand-text font-weight-light">ESP - Maintenance</span>
+	</a>
+
+	<div class="sidebar">
+
+		<nav class="mt-5">
+			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+				
+				<li class="nav-item">
+					<a href="{{path('app_admin')}}" class="nav-link">
+						<i class="nav-icon fas fa-home"></i>
+						<p>
+							Accueil
+						</p>
+					</a>
+
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fas  fa-list-alt"></i>
+						<p>
+							Les demandes
+							<i class="fas fa-angle-left right"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="{{path('app_ask_list')}}" class="nav-link">
+								<i class="fas fa-check-circle nav-icon"></i>
+								<p>Toutes les demandes
+									<span class="badge badge-info right">{{numberOfInterventions}}</span>
+
+
+								</p>
+
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{path('app_ask_list',{status: 'OK'})}}" class="nav-link">
+								<i class="fas fa-check-circle nav-icon"></i>
+								<p>Demandes traitées
+									<span class="badge badge-success right">{{numberOfInterventionsDone}}</span>
+
+								</p>
+
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{path('app_ask_list',{status: 'EN_COURS'})}}" class="nav-link">
+								<i class="fas fa-cogs nav-icon"></i>
+								<p>Demandes en cours
+									<span class="badge badge-warning right">{{numberOfInterventionsOnGoing}}</span>
+
+								</p>
+
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="nav-item">
+					<a href="{{path('app_ask_stat')}}" class="nav-link">
+						<i class="nav-icon fas fa-chart-pie"></i>
+						<p>
+							Statistiques
+						</p>
+					</a>
+
+				</li>
+
+			</ul>
+		</nav>
+		<!-- /.sidebar-menu -->
+	</div>
+	<!-- /.sidebar -->
+</aside>

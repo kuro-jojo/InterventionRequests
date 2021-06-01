@@ -1,0 +1,220 @@
+{% extends "baseAdmin.html.twig" %}
+
+{% block stylesheets %}
+	{{parent()}}
+
+	<style>
+
+		.chevron {
+			display: inline-flex;
+			overflow: hidden;
+			width: auto;
+			align-items: center;
+			max-width: 30px; /** I'm animating max-width because width needs to be auto, and auto can't be animated **/
+			-webkit-transition: max-width 0.5s;
+			transition: max-width 0.5s;
+			height: 30px;
+
+		}
+		.chevron:hover {
+			max-width: 300px;
+		}
+		.chevron span {
+			white-space: nowrap;
+			padding-right: 20px;
+		}
+		.fa-chevron-circle-right {
+			font-size: 25px;
+
+		}
+		.info-box:hover {
+			cursor: pointer;
+		}
+	</style>
+{% endblock %}
+{% block body %}
+
+	<div class="preloader flex-column justify-content-center align-items-center">
+		<img class="animation__wobble" src="{{asset('img/esp.png')}}" alt="EspLogo" height="60" width="60">
+	</div>
+
+	{% include "layouts/_nav_admin.html.twig" %}
+
+	{% include "layouts/_sidebar_admin.html.twig" %}
+
+	<div class="content-wrapper">
+		<div class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-6">
+						<h1 class="m-0">Dashboard</h1>
+					</div>
+					<!-- /.col -->
+
+					<!-- /.col -->
+				</div>
+				<!-- /.row -->
+			</div>
+			<!-- /.container-fluid -->
+		</div>
+		<!-- /.content-header -->
+
+		<section class="content mt-5">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="info-box">
+						<span class="info-box-icon bg-info elevation-1">
+							<i class="fas fa-list-alt"></i>
+						</span>
+
+						<div class="info-box-content">
+							<span class="info-box-text">Nombre de demandes recueillies</span>
+							<div class="d-flex justify-content-between">
+								{% if numberOfInterventions == 0 %}
+									<span class="info-box-number">Aucune</span>
+								{% else %}
+
+									<div class="">
+										<span class="info-box-number">{{numberOfInterventions}}</span>
+									</div>
+									<div class="">
+										<a href="{{path('app_ask_list')}}" class="text-white chevron">
+											<span>
+												<i class="fas fa-chevron-circle-right"></i>
+											</span>
+											<span class="text">Voir</span>
+
+										</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+						<!-- /.info-box-content -->
+					</div>
+					<!-- /.info-box -->
+				</div>
+				<!-- /.col -->
+				<div class="col-md-3">
+					<div class="info-box">
+						<span class="info-box-icon bg-teal elevation-1">
+							<i class="fas fa-check-circle"></i>
+						</span>
+
+						<div class="info-box-content">
+							<span class="info-box-text">Nombre de demandes Traitées</span>
+							<div class="d-flex justify-content-between">
+								{% if numberOfInterventionsDone == 0 %}
+									<span class="info-box-number">Aucune</span>
+								{% else %}
+
+									<div class="">
+										<span class="info-box-number">{{numberOfInterventionsDone}}</span>
+									</div>
+									<div class="">
+										<a href="#" class="text-white chevron">
+											<span>
+												<i class="fas fa-chevron-circle-right"></i>
+											</span>
+											<span class="text">Voir</span>
+
+										</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+						<!-- /.info-box-content -->
+					</div>
+					<!-- /.info-box -->
+				</div>
+				<!-- /.col -->
+				<!-- fix for small devices only -->
+
+				<div class="col-md-3">
+					<div class="info-box">
+						<span class="info-box-icon bg-warning elevation-1">
+							<i class="fas fa-cogs"></i>
+						</span>
+
+						<div class="info-box-content">
+							<span class="info-box-text">Nombre de demandes en cours</span>
+							<div class="d-flex justify-content-between">
+								{% if numberOfInterventionsOnGoing == 0 %}
+									<span class="info-box-number">Aucune</span>
+								{% else %}
+
+									<div class="">
+										<span class="info-box-number">{{numberOfInterventionsOnGoing}}</span>
+									</div>
+									<div class="">
+										<a href="#" class="text-white chevron">
+											<span>
+												<i class="fas fa-chevron-circle-right"></i>
+											</span>
+											<span class="text">Voir</span>
+
+										</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+						<!-- /.info-box-content -->
+					</div>
+					<!-- /.info-box -->
+				</div>
+				<!-- /.col -->
+				<div class="col-md-3">
+					<div class="info-box">
+						<span class="info-box-icon bg-light elevation-1">
+							<i class="fas fa-users"></i>
+						</span>
+
+						<div class="info-box-content">
+							<span class="info-box-text">Mes agents</span>
+							<div class="d-flex justify-content-between">
+								{% if numberOfAgents == 0 %}
+									<span class="info-box-number">Aucun</span>
+								{% else %}
+
+									<div class="">
+										<span class="info-box-number">{{numberOfAgents }}</span>
+									</div>
+									<div class="">
+										<a href="#" class="text-white chevron">
+											<span>
+												<i class="fas fa-chevron-circle-right"></i>
+											</span>
+											<span class="text">Voir</span>
+
+										</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+						<!-- /.info-box-content -->
+					</div>
+					<!-- /.info-box -->
+				</div>
+			</div>
+		</section>
+		<!-- /.content -->
+	</div>
+	<!-- /.content-wrapper -->
+
+	<!-- Control Sidebar -->
+	<aside
+		class="control-sidebar control-sidebar-dark"><!-- Control sidebar content goes here -->
+	</aside>
+	<!-- /.control-sidebar -->
+
+	<!-- Main Footer -->
+	<footer class="main-footer">
+		<strong>Copyright &copy; 2014-2021
+			<a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+		All rights reserved.
+		<div class="float-right d-none d-sm-inline-block">
+			<b>Version</b>
+			3.1.0
+		</div>
+	</footer>
+
+{% endblock %}

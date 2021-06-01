@@ -1,0 +1,199 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Liste des demandes
+{% endblock %}
+
+{% block stylesheets %}
+	{{parent()}}
+	<style>
+		body {
+			overflow-x: hidden;
+		}
+		thead {}
+		th {
+			text-align: center;
+		}
+		td,
+		th {
+			text-align: center !important;
+			vertical-align: unset !important;
+		}
+		.table-responsive {
+			max-width: 85vw;
+			margin-top: 2em;
+			border-right: none
+		}
+		/* .assign {
+			visibility: hidden;
+		} */
+	</style>
+{% endblock %}
+
+{% block javascripts %}
+	{{parent()}}
+{% endblock %}
+{% block body %}
+
+	{% set service = "" %}
+	{% if is_granted("ROLE_CHEF_SERVICE") %}
+		{% set service = "service" %}
+	{% endif %}
+	{% include "layouts/_nav_admin.html.twig" %}
+	{% include "layouts/_sidebar_admin.html.twig" %}
+
+	<div class="content-wrapper">
+		<h1 class="text-center">Liste des demandes</h1>
+		{% if status is null %}
+		<section class="content mt-5">
+			{{form_start(form)}}
+			<div class="row justify-content-end">
+
+				<div class="col-md-2">
+					{{ form_widget(form.typeDefaillance)}}
+				</div>
+				<div class="col-md-2">
+					{{ form_widget(form.statutDemande)}}
+				</div>
+				<div class="col-md-2">
+					{{ form_widget(form.prioriteDemande)}}
+				</div>
+				<div class="col-md-3">
+					<button class="btn btn-main" type="submit">Rechercher</button>
+				</div>
+			</div>
+			{{form_end(form)}}
+		</section>
+		{% endif %}
+		{% if demandes is not empty %}
+			<div class="table-responsive {{service}} mx-auto">
+				<table class="table table- table-hover">
+					<thead class="table-main">
+						<tr>
+							<th class="header" scope="col">Statut</th>
+							<th class="header" scope="col">Numéro demande</th>
+							<th class="header" scope="col">Horodateur</th>
+							<th class="header" scope="col">Demandeur</th>
+							<th class="header" scope="col">Contact</th>
+							<th class="header" scope="col">Fonction</th>
+							<th class="header" scope="col">Type de défaillance</th>
+							<th class="header" scope="col">Priorité</th>
+							<th class="header" scope="col">Cause defaillance</th>
+							<th class="header" scope="col">Département ou service</th>
+							{% if is_granted('ROLE_CHEF_POLE') %}
+							<th class="header" scope="col">Actions</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+						{% for demande in demandes %}
+							{% set type = 'success' %}
+
+							{% if demande.statut == 'EN_ATTENTE' %}
+								{% set type = 'danger' %}
+							{% elseif demande.statut == 'EN_COURS' %}
+								{% set type = 'warning' %}
+							{% endif %}
+							<tr>
+
+								<td class="body btn-{{type}} m-2 text-white fw-bold">{{ demande.statut|readable_enum}}</td>
+								<td class="body fw-bold">{{ demande.id}}</td>
+								<td class="body">{{ demande.dateDemande | date('d/m/y à H:i:s') }}</td>
+								<td class="body">{{ demande.nomDemandeur }}</td>
+								<td class="body">{{ demande.contactDemandeur}}</td>
+								<td class="body">{{ demande.fonction}}</td>
+								<td class="body">{{ demande.poleConcerne.nomPole}}</td>
+								<td class="body">{{ demande.priorite | readable_enum}}</td>
+								<td class="body">{{ demande.causeDefaillance | readable_enum }}</td>
+								<td class="body">{{ demande.departement | readable_enum }}</td>
+								{% if is_granted('ROLE_CHEF_POLE') %}
+									<td id="assign-{{demande.id}}" class="assign border-0">
+										<a title="Assigner un agent" href="#" class="btn btn-success mr-2" data-bs-toggle="modal" data-bs-target="#assignModal-{{demande.id}}">
+											<i class="nav-icon fas fa-user-plus"></i>
+										</a>
+										<a title="Les agents assignés" href="#" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#agentModal-{{demande.id}}">
+											<i class="nav-icon fas fa-user"></i>
+										</a>
+									</td>
+									<div class="modal fade" id="assignModal-{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="exampleModalLabel">Nos agents</h5>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												{% if agents[demande.id] is not empty %}
+													<div class="modal-body">
+														<form action="{{path('app_ask_assign',{id:demande.id})}}" method="post">
+															{% for agent in agents[demande.id] %}
+																<div class="form-check">
+																	<input class="form-check-input" type="checkbox" value="{{agent.id}}" id="inputCheck-{{agent.id}}" name="agent-{{agent.id}}">
+																	<label class="form-check-label" for="inputCheck-{{agent.id}}">
+																		{{agent.nom}}
+																		{{agent.prenom}}
+																	</label>
+																</div>
+															{% endfor %}
+															<div class="d-grid gap-2 col-6 mx-auto mt-3">
+																<button type="submit" class="btn btn-outline-success">Assigner</button>
+															</div>
+														</form>
+													</div>
+												{% else %}
+													<div class="modal-body text-center">
+
+														Aucun agent dans le service ou disponible
+													</div>
+													<div class="modal-footer justify-content-center">
+														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+													</div>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+
+									<div class="modal fade" id="agentModal-{{demande.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="exampleModalLabel">Agents affectés à cette intervention</h5>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												{% if agentsOfAsk[demande.id] is not empty %}
+													<div class="modal-body">
+														{% for agents in agentsOfAsk[demande.id] %}
+															{% for agent in agents %}
+
+																<div class="form-check">
+																	<label class="form-check-label fs-4" for="inputCheck-{{agent.id}}">
+																		{{agent.nom}}
+																		{{agent.prenom}}
+																	</label>
+																</div>
+															{% endfor %}
+														{% endfor %}
+
+													</div>
+												{% else %}
+													<div class="modal-body text-center">
+
+														Aucun agent dans le service ou disponible
+													</div>
+													<div class="modal-footer justify-content-center">
+														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+													</div>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% else %}
+			<h2 class="text-center mt-5">Aucune demande pour le moment</h2>
+		{% endif %}
+
+	</div>
+{% endblock %}

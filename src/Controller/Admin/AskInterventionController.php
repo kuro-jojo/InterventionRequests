@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\DBAL\Types\StatutType;
 use App\Entity\Contact;
