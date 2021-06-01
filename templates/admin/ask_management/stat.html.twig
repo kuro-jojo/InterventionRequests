@@ -15,13 +15,22 @@
 		.menu {
 			position: relative;
 			top: 200px;
-			left: 100px;
-			height: 100%
+			left: 10vw;
+			height: 100%;
+			margin-right:10%
 		}
 		#cause,
 		#typeDefaillance,
 		#priorite {
 			display: none;
+		}
+		@media screen and (max-width:500px) {
+			.menu {
+				display: none !important;
+			}
+			.chart {
+				display: block !important;
+			}
 		}
 	</style>
 {% endblock %}
@@ -75,9 +84,7 @@ label: "Causes des défaillances",
 data: [
 {{ dataCauses[0] }}, {{ dataCauses[1] }}, {{ dataCauses[2] }}, {{ dataCauses[3] }}
 ],
-backgroundColor: [
-'rgba(43,14,203,0.88)', 'rgba(75,149,62,0.88)', 'rgba(123,81,49,0.88)', 'rgb(253,253,254)',
-],
+backgroundColor: ['rgba(43,14,203,0.88)', 'rgba(75,149,62,0.88)', 'rgba(123,81,49,0.88)', 'rgb(253,253,254)',]
 }
 ]
 },
@@ -117,8 +124,8 @@ backgroundColor: [
 'rgba(123,81,49,0.88)',
 'rgb(253,253,254)',
 'rgba(123,49,105,0.88)',
-],
- 
+]
+
 }
 ]
 },
@@ -144,9 +151,7 @@ label: "Priorité des demandes",
 data: [
 {{ prioriteData[0] }}, {{ prioriteData[1] }}, {{ prioriteData[2] }}
 ],
-backgroundColor: [
-'rgba(103,81,229,0.27)', 'rgba(86,113,82,0.27)', 'rgba(113,227,190,0.27)',
-],
+backgroundColor: ['rgba(103,81,229,0.27)', 'rgba(86,113,82,0.27)', 'rgba(113,227,190,0.27)',]
 
 }
 ]

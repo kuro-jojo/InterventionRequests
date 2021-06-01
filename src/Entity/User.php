@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="type",type="string")
- * @ORM\DiscriminatorMap({"chefService"="ChefService","chefPole"="ChefPole","agentMaintenance"="AgentMaintenance"})
+ * @ORM\DiscriminatorMap({"chefService"="ChefService","chefPole"="ChefPole","agentMaintenance"="AgentMaintenance","responsable"="Responsable"})
  * 
  * @ORM\Table(name="`user`")
  */

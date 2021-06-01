@@ -19,20 +19,27 @@
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('admin') }}
 		{% endblock %}
-		<style></style>
+		<style>
+			#flasher-container-top-right {
+				top: 10% !important;
+			}
+		
+		</style>
 
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('admin') }}
 		{% endblock %}
 	</head>
-	<body
-		class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-		<!-- Flashy depends on jQuery -->
+	<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+	<div class="wrapper">
+
+	{{flasher_render()}}
 		<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
 		{# {{ include('@MercurySeriesFlashy/flashy.html.twig') }} #}
 		<script src="https://kit.fontawesome.com/bca57ce0fe.js" crossorigin="anonymous"></script>
 		{% block body %}{% endblock %}
+		</div>
 
 	</body>
 </html>

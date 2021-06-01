@@ -38,16 +38,17 @@ class AskManagementController extends AbstractController
     }
     /**
      * @IsGranted("ROLE_CHEF")
-     * @Route("/list", name="_list")
+     * @Route("/list/{status}", name="_list")
      * 
      */
-    public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository, PaginatorInterface $paginator, InterventionCount $interventionCount): Response
+    public function listAsk(string $status = null, Security $security, Request $request, DemandeInterventionRepository $askRepository, PaginatorInterface $paginator, InterventionCount $interventionCount): Response
     {
         $demandes = [];
         //Agent for this specific pole
         $agents = null;
         //Contains all available agent on a specific request
         $agentsAvailable = array();
+        $agentsOfAsk = array();
 
         $chef = $security->getUser();
         if ($this->isGranted($this::ROLE_CHEF_POLE)) {
@@ -65,18 +66,26 @@ class AskManagementController extends AbstractController
                         array_push($agentsAvailable[$demande->getId()], $agent);
                     }
                 }
+                $agentsOfAsk[$demande->getId()] = array();
+                // Liste des agents de cette intervention
+                array_push($agentsOfAsk[$demande->getId()],$demande->getTraiteursDemande());
             }
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
         }
 
-
+  
+        
         // filtrage
         $searchAsk = new SearchAsk;
         $form = $this->createForm(SearchAskFormType::class, $searchAsk);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($searchAsk) {
+            if ($status) {
+                $searchAsk->setStatutDemande($status);
+            }
+
             $demandes = $paginator->paginate(
                 $askRepository->findAskBySearch($searchAsk),
                 $request->query->getInt('page', 1),
@@ -96,11 +105,12 @@ class AskManagementController extends AbstractController
             $numberOfInterventionsOnGoing = $interventionCount->getNumberOfAskOnGoing($this->getUser()->getMonPole()->getId());
             $numberOfAgents = $interventionCount->getNumberOfAgents(true);
         }
-       
         return $this->render('admin/ask_management/listDemandes.html.twig', [
             'demandes' => $demandes,
             'agents' => $agentsAvailable,
             'form' => $form->createView(),
+            'agentsOfAsk'=>$agentsOfAsk,
+            'status' => $status,
 
             'numberOfInterventions' => $numberOfInterventions,
             'numberOfInterventionsDone' => $numberOfInterventionsDone,
@@ -117,8 +127,6 @@ class AskManagementController extends AbstractController
     {
         $agentIds = $request->request->all();
         foreach ($agentIds as $id) {
-            TODO:
-            "Vérifier si l'agent a déjà été assigné à cette intervention";
             $demande->addTraiteursDemande($this->agentRepository->find($id));
         }
         if ($demande->getStatut() != StatutType::EN_COURS) {
