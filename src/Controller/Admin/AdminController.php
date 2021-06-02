@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 /**
- * @IsGranted("ROLE_CHEF")
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
  * @Route("/admin", name="app_admin")
  */
 class AdminController extends AbstractController
@@ -45,11 +45,21 @@ class AdminController extends AbstractController
             $numberOfInterventions = $interventionCount->getNumberOfAsk($this->getUser()->getMonPole()->getId());
             $numberOfInterventionsDone = $interventionCount->getNumberOfAskDone($this->getUser()->getMonPole()->getId());
             $numberOfInterventionsOnGoing = $interventionCount->getNumberOfAskOnGoing($this->getUser()->getMonPole()->getId());
-        $numberOfAgents = $interventionCount->getNumberOfAgents(true);
-
+            $numberOfAgents = $interventionCount->getNumberOfAgents(true);
+        } else if ($this->isGranted($this::ROLE_AGENT)) {
+            $numberOfInterventions = $this->getUser()->getDemandeInterventions()->count();
+            $numberOfInterventionsDone = 0;
+            $numberOfInterventionsOnGoing = 0;
+            foreach ($this->getUser()->getDemandeInterventions() as $demande) {
+                if ($demande->getStatut() == "OK") {
+                    $numberOfInterventionsDone++;
+                } else if ($demande->getStatut() == "EN_COURS") {
+                    $numberOfInterventionsOnGoing++;
+                }
+            }
         }
 
-       
+
         return $this->render('admin/index.html.twig', [
             'numberOfInterventions' => $numberOfInterventions,
             'numberOfInterventionsDone' => $numberOfInterventionsDone,

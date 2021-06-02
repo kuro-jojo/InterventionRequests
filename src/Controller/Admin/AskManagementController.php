@@ -88,23 +88,24 @@ class AskManagementController extends AbstractController
             $demandes = $this->em->createQuery('SELECT b from App\Entity\DemandeIntervention b inner join b.traiteursDemande a')->getResult();
         }
 
-
-
         // filtrage
+
         $searchAsk = new SearchAsk;
         $form = $this->createForm(SearchAskFormType::class, $searchAsk);
         $form->handleRequest($request);
 
-        if ($searchAsk) {
-            if ($status) {
-                $searchAsk->setStatutDemande($status);
-            }
+        if ($demandes && $status) {
+            if ($searchAsk) {
+                if ($status) {
+                    $searchAsk->setStatutDemande($status);
+                }
 
-            $demandes = $paginator->paginate(
-                $askRepository->findAskBySearch($searchAsk, $this->isGranted($this::ROLE_AGENT) ? $this->getUser()->getId() : null),
-                $request->query->getInt('page', 1),
-                15
-            );
+                $demandes = $paginator->paginate(
+                    $askRepository->findAskBySearch($searchAsk, $this->isGranted($this::ROLE_AGENT) ? $this->getUser()->getId() : null),
+                    $request->query->getInt('page', 1),
+                    15
+                );
+            }
         }
 
         // Les nombres de demandes
@@ -118,7 +119,19 @@ class AskManagementController extends AbstractController
             $numberOfInterventionsDone = $interventionCount->getNumberOfAskDone($this->getUser()->getMonPole()->getId());
             $numberOfInterventionsOnGoing = $interventionCount->getNumberOfAskOnGoing($this->getUser()->getMonPole()->getId());
             $numberOfAgents = $interventionCount->getNumberOfAgents(true);
+        } else if ($this->isGranted($this::ROLE_AGENT)) {
+            $numberOfInterventions = $this->getUser()->getDemandeInterventions()->count();
+            $numberOfInterventionsDone = 0;
+            $numberOfInterventionsOnGoing = 0;
+            foreach ($this->getUser()->getDemandeInterventions() as $demande) {
+                if ($demande->getStatut() == "OK") {
+                    $numberOfInterventionsDone++;
+                }else if ($demande->getStatut() == "EN_COURS"){
+                    $numberOfInterventionsOnGoing++;
+                }
+            }
         }
+
         return $this->render('admin/ask_management/listDemandes.html.twig', [
             'demandes' => $demandes,
             'agents' => $agentsAvailable,
@@ -160,7 +173,7 @@ class AskManagementController extends AbstractController
      */
     public function gererDemande(DemandeIntervention $demande, Request $request): Response
     {
-       
+
         $form = $this->createForm(DemandeInterventionType::class, $demande);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -188,6 +201,7 @@ class AskManagementController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_AGENT")
      * @Route("/manage/begin/{id<\d+>}", name="_manage_begin")
      */
     public function beginIntervention(DemandeIntervention $demande, Request $request, DemandeInterventionRepository $repo,): Response
@@ -244,7 +258,7 @@ class AskManagementController extends AbstractController
         $urgentNbre = 0;
         $peuUrgentNbre = 0;
         $pasUrgentNbre = 0;
-
+        dd($DUnbre);
         $urgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = ' . '\'Urgent\'')->getSingleScalarResult();
         $peuUrgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = ' . '\'PeuUrgent\'')->getSingleScalarResult();
         $pasUrgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = ' . '\'PasUrgent\'')->getSingleScalarResult();
