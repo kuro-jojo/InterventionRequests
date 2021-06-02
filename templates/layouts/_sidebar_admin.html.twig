@@ -60,7 +60,7 @@
 						</li>
 					</ul>
 				</li>
-				{% if is_granted("ROLE_CHEF") %}
+				{% if is_granted("ROLE_CHEF_SERVICE") %}
 					<li class="nav-item">
 						<a href="{{path('app_ask_stat')}}" class="nav-link">
 							<i class="nav-icon fas fa-chart-pie"></i>
