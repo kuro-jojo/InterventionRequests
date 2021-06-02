@@ -1,4 +1,5 @@
 @import "~bootstrap/dist/css/bootstrap.css";
+@import "~chart.js/dist/Chart.css";
 @import "ask-form.css";
 :root {
     --main-color: #2993cd !important;

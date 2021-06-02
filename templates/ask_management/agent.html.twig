@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title%}Fiche d'intervention
+{% endblock %}
+{% block stylesheets %}
+  {{parent()}}
+{% endblock %}
+{% block body %}
+    <h1>liste des demandes de l'agent</h1>
+    <p>
+        {% for demande in demandes %}
+            {{ demande.nomDemandeur }}
+        {% endfor %}
+    </p>
+
+{% endblock %}
+

@@ -8,6 +8,9 @@ use Flasher\Prime\FlasherInterface;
 use App\Form\DemandeInterventionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Message;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\AgentMaintenanceRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,13 +30,15 @@ class AskManagementController extends AbstractController
 
     public const ROLE_CHEF_POLE = 'ROLE_CHEF_POLE';
     public const ROLE_CHEF_SERVICE = 'ROLE_CHEF_SERVICE';
+    public const ROLE_AGENT = 'ROLE_AGENT';
 
     /**
-     * @IsGranted("ROLE_CHEF")
+     *
+     *
      * @Route("/list", name="_list")
      * 
      */
-    public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository, AgentMaintenanceRepository $agentRepository): Response
+    public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository, AgentMaintenanceRepository $agentRepository, EntityManagerInterface $em): Response
     {
         $demandes = [];
         //Agent for this specific pole
@@ -61,10 +66,86 @@ class AskManagementController extends AbstractController
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
         }
+        elseif ($this->isGranted($this::ROLE_AGENT)){
+            //liste des interventions pour l'agent en cours.
+            dump($chef);
+            //creonsl a méthode dans le repository
+            $demandes = $em->createQuery('SELECT b from App\Entity\DemandeIntervention b inner join b.traiteursDemande a')->getResult();
+        }
         return $this->render('ask_management/listDemandes.html.twig', [
             'demandes' => $demandes,
             'agents' => $agentsAvailable
         ]);
+    }
+
+    /**
+     * @Route("/manage/{id<\d+>}", name="_manage")
+     * @param DemandeIntervention $demandeIntervention
+     * @param Request $request
+     * @return Response
+     */
+    public function gererDemande(DemandeIntervention $demandeIntervention, Request $request, EntityManagerInterface $em): Response
+    {
+        $form = $this->createForm(DemandeInterventionType::class, $demandeIntervention);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+            $em->flush();
+
+            //mettre ici le message flash assurant.
+            return $this->redirectToRoute('app_ask_list');
+        }
+
+        return $this->render('ask_management/mangeOne.html.twig', [
+            'demande' => $demandeIntervention,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/begin/{id<\d+>}", name="_begin")
+     */
+    public function beginIntervention(DemandeIntervention $demande, MailerInterface $mailer, Request $request, DemandeInterventionRepository $repo, EntityManagerInterface $em, FlasherInterface $flasher):Response
+    {
+        $demande->setStatut(StatutType::EN_COURS);
+        $demande->setDateIntervention(new \DateTime('now'));
+        $id = $demande->getId();
+        $em->flush();
+        $flasher->addInfo("L'intervention est desormais en cours");
+
+        $mail = (new Email())
+            ->from('' . $demande->getEmailDemandeur())
+            ->to('kassamagan5@gmail.com')
+            ->subject('Mise à jour demande Intervention')
+            ->html("<h1>Mise à jour de la demande</h1>
+<p>Votre demande d'intervention à propos de ". $demande->getPoleConcerne()->getNomPole() ." au niveau de ".$demande->getDepartement()." est en cours de traitement</p>");
+
+        $mailer->send($mail);
+
+        return $this->redirectToRoute('app_ask_manage', [
+            'id' => $id,
+        ]);
+    }
+
+    /**
+     * @param DemandeIntervention $demande
+     * @param EntityManagerInterface $em
+     * @return Response
+     * @Route("/end/{id<\d+>}", name="_end")
+     */
+    public function endIntervention(DemandeIntervention $demande, MailerInterface $mailer, EntityManagerInterface $em, FlasherInterface $flasher):Response
+    {
+        $demande->setStatut(StatutType::OK);
+        $em->flush();
+        $flasher->addInfo("Intervention terminée!!");
+        $mail = (new Email())
+            ->from('' . $demande->getEmailDemandeur())
+            ->to('kassamagan5@gmail.com')
+            ->subject('Mise à jour demande Intervention')
+            ->html("<h1>Mise à jour de la demande</h1>
+<p>Votre demande d'intervention à propos de ". $demande->getPoleConcerne()->getNomPole() ." au niveau de ".$demande->getDepartement()." a été traitée.</p>");
+
+        $mailer->send($mail);
+        return $this->redirectToRoute('app_ask_list');
     }
 
     /**
@@ -90,121 +171,63 @@ class AskManagementController extends AbstractController
      //affichage des statistiques
 
     /**
-     * @IsGranted("ROLE_CHEF_SERVICE")
+     *
      * @Route("/stat", name="_stat")
      */
-    // public function statistique(DemandeInterventionRepository $askRepository, ChartBuilderInterface $chartBuilder, EntityManagerInterface $em): Response
-    // {
+     public function statistique(DemandeInterventionRepository $askRepository, EntityManagerInterface $em): Response
+     {
 
-    //     //recuperation pour les statuts
-    //     $enAttenteNbre = 0;
-    //     $encoursNbre = 0;
-    //     $okNbre = 0;
-    //     $enAttenteNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.statut = '.'\'EN_ATTENTE\'')->getSingleScalarResult();
-    //     $encoursNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.statut = '.'\'EN_COURS\'')->getSingleScalarResult();
-    //     $okNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.statut = '.'\'OK\'')->getSingleScalarResult();        
+         //recuperation pour les statuts
+         $enAttenteNbre = 0;
+         $encoursNbre = 0;
+         $okNbre = 0;
+         $enAttenteNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.statut = '.'\'EN_ATTENTE\'')->getSingleScalarResult();
+         $encoursNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.statut = '.'\'EN_COURS\'')->getSingleScalarResult();
+         $okNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.statut = '.'\'OK\'')->getSingleScalarResult();
 
-    //     $chart1 = $chartBuilder->createChart(Chart::TYPE_BAR);
-    //     $chart1->setData([
-    //         'labels' => ['En attente', 'En cours', 'OK'],
-    //         'datasets' => [
-    //             [
-    //                 'label' => 'Statut des demandes',
-    //                 'backgroundColor' => 'rgb(255, 99, 132)',
-    //                 'borderColor' => 'rgb(255, 99, 132)',
-    //                 'data' => [$enAttenteNbre, $encoursNbre, $okNbre],
-    //             ],
-    //         ],
-    //     ]);
-    //     $chart1->setOptions([
-    //         'scales' => [
-    //             'y' => [
-    //                 'beginAtZero' => true,
-    //             ]
-    //         ]
-    //     ]);
+         $UNNbre = 0;
+         $DUnbre = 0;
+         $DPNbre = 0;
+         $ANbre = 0;
+         $UNNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'UsureNormal\'')->getSingleScalarResult();
+         $DUnbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'DefautUtilisateur\'')->getSingleScalarResult();
+         $DPNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'DefautProduit\'')->getSingleScalarResult();
+         $ANbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'Autres\'')->getSingleScalarResult();
 
-    //     //les causes:UsureNormal, DefautUtilisateur, DefautProduit, Autres
+         $causeData = [$UNNbre, $DUnbre, $DPNbre, $ANbre];
 
-    //     $UNNbre = 0;
-    //     $DUnbre = 0;
-    //     $DPNbre = 0;
-    //     $ANbre = 0;
-    //     $UNNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'UsureNormal\'')->getSingleScalarResult();
-    //     $DUnbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'DefautUtilisateur\'')->getSingleScalarResult();
-    //     $DPNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'DefautProduit\'')->getSingleScalarResult();
-    //     $ANbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.causeDefaillance = '.'\'Autres\'')->getSingleScalarResult();
+         $urgentNbre = 0;
+         $peuUrgentNbre = 0;
+         $pasUrgentNbre = 0;
 
-    //     $chart2 = $chartBuilder->createChart(Chart::TYPE_PIE);
-    //     $chart2->setData([
-    //         'labels' => ['Usure Normale', 'Défaut Utilisateur', 'Défaut Produit', 'Autres'],
-    //         'datasets' => [
-    //             [
-    //                 'label' => 'Causes défaillance',
-    //                 'backgroundColor' => [
-    //                     'rgb(255, 99, 132)',
-    //                     'rgb(100, 55, 130)',
-    //                     'rgb(200, 45, 135)',
-    //                     'rgb(156, 74, 139)',
-    //                 ],
-    //                 'borderColor' => [
-    //                     'rgb(255, 99, 132)',
-    //                     'rgb(100, 55, 130)',
-    //                     'rgb(200, 45, 135)',
-    //                     'rgb(156, 74, 139)',
-    //                 ],
-    //                 'data' => [$UNNbre, $DUnbre, $DPNbre, $ANbre],
-    //             ],
-    //         ],
-    //     ]);
-    //     //$chart2->setOptions([
-    //       //  'scales' => [
-    //          //   'yAxes' => [
-    //          //       ['ticks' => ['min' => 0],
-    //          //   ]
-    //         //]]
-    //     //]);
+         $urgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = '.'\'Urgent\'')->getSingleScalarResult();
+         $peuUrgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = '.'\'PeuUrgent\'')->getSingleScalarResult();
+         $pasUrgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = '.'\'PasUrgent\'')->getSingleScalarResult();
 
-    //     $urgentNbre = 0;
-    //     $peuUrgentNbre = 0;
-    //     $pasUrgentNbre = 0;
+         $prioriteData = [$urgentNbre, $peuUrgentNbre, $pasUrgentNbre];
 
-    //     $urgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = '.'\'Urgent\'')->getSingleScalarResult();
-    //     $peuUrgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = '.'\'PeuUrgent\'')->getSingleScalarResult();
-    //     $pasUrgentNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.priorite = '.'\'PasUrgent\'')->getSingleScalarResult();
-    //     $chart3 = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
-    //     $chart3->setData([
-    //         'labels' => ['Urgente', 'Peu Urgente', 'Pas Urgente'],
-    //         'datasets' => [
-    //             [
-    //                 'label' => 'Priorité des demandes',
-    //                 'backgroundColor' => [
-    //                     'rgb(255, 99, 132)',
-    //                     'rgb(100, 55, 130)',
-    //                     'rgb(200, 45, 135)',
-    //                 ],
-    //                 'borderColor' => [
-    //                     'rgb(255, 99, 132)',
-    //                     'rgb(100, 55, 130)',
-    //                     'rgb(200, 45, 135)',
-    //                 ],
-    //                 'data' => [$urgentNbre, $peuUrgentNbre, $pasUrgentNbre],
-    //             ],
-    //         ],
-    //     ]);
-    //     $chart3->setOptions([
-    //         'scales' => [
-    //             'y' => [
-    //                 'beginAtZero' => true,
-    //             ]
-    //         ]
-    //     ]);
+         $menuiserieNbre = 0;
+         $elecNbre = 0;
+         $maconNbre = 0;
+         $climaNbre = 0;
+         $plombNbre = 0;
 
-    //     return $this->render('ask_management/stat.html.twig',[
-    //         'chart' => $chart1,
-    //         'chart2' => $chart2,
-    //         'chart3' => $chart3
-    //     ]);
-    // }
+         $menuiserieNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.poleConcerne in (select p.id from App\Entity\Pole p where p.nomPole = '.'\'Menuiserie\')')->getSingleScalarResult();
+         $elecNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.poleConcerne in (select p.id from App\Entity\Pole p where p.nomPole = '.'\'Electricite\')')->getSingleScalarResult();
+         $maconNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.poleConcerne in (select p.id from App\Entity\Pole p where p.nomPole = '.'\'Maconnerie\')')->getSingleScalarResult();
+         $climaNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.poleConcerne in (select p.id from App\Entity\Pole p where p.nomPole = '.'\'Climatisation\')')->getSingleScalarResult();
+         $plombNbre = $em->createQuery('SELECT count(d) from App\Entity\DemandeIntervention d where d.poleConcerne in (select p.id from App\Entity\Pole p where p.nomPole = '.'\'Plomberie\')')->getSingleScalarResult();
+
+         $typeData = [$menuiserieNbre, $elecNbre, $maconNbre, $climaNbre, $plombNbre];
+         return $this->render('ask_management/stat.html.twig',[
+             'enAttenteNbre' => $enAttenteNbre,
+             'okNbre' => $okNbre,
+             'encoursNbre' => $encoursNbre,
+             'dataCauses' => $causeData,
+             'typeData' => $typeData,
+             'prioriteData' => $prioriteData,
+         ]);
+     }
+
    
 }

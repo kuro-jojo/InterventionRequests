@@ -13,22 +13,160 @@
     }
   </style>
 {%endblock %}
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    function chart1() {
+      var ctx1 = document.getElementById('myChart1').getContext('2d');
+      var ctx2 = document.getElementById('myChart2').getContext('2d');
+      var ctx3 = document.getElementById('myChart3').getContext('2d');
+      var ctx4 = document.getElementById('myChart4').getContext('2d');
+
+      //mise en place pour le statut des demandes
+      var myChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['En Attente', 'En Cours', 'OK'],
+          datasets: [{
+            label: "Statut des demandes",
+            data: [{{ enAttenteNbre }},{{ encoursNbre }},{{ okNbre }}],
+            backgroundColor:
+                    'rgba(37,23,120,0.67)',
+            borderColor: ['rgba(255,255,255,0.93)']
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      //mise en place pour les causes de défaillances
+      var myChart2 = new Chart(ctx2, {
+        type: 'pie',
+        data: {
+          labels: ['Usure Normale', 'Défaut utilisateur', 'Défaut produit', 'Autres'],
+          datasets: [{
+            label: "Causes des défaillances",
+            data: [{{ dataCauses[0] }},{{ dataCauses[1] }},{{ dataCauses[2] }}, {{ dataCauses[3] }}],
+            backgroundColor: [
+              'rgba(43,14,203,0.88)',
+              'rgba(75,149,62,0.88)',
+              'rgba(123,81,49,0.88)',
+              'rgb(253,253,254)',
+            ],
+            borderColor: [
+              'rgba(201,15,59,0.85)',
+              'rgba(201,15,59,0.85)',
+              'rgba(201,15,59,0.85)',
+              'rgba(201,15,59,0.85)'
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      //mise en place pour les types de défaillances
+      var myChart3 = new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ménuiserie', 'Electricité', 'Maçonnerie', 'Climatisation', 'Plomberie'],
+          datasets: [{
+            label: "Types de défaillances des défaillances",
+            data: [{{ typeData[0] }},{{ typeData[1] }},{{ typeData[2] }}, {{ typeData[3] }}, {{ typeData[4] }}],
+            backgroundColor: [
+              'rgba(43,14,203,0.88)',
+              'rgba(75,149,62,0.88)',
+              'rgba(123,81,49,0.88)',
+              'rgb(253,253,254)',
+              'rgba(123,49,105,0.88)',
+            ],
+            borderColor: [
+              'rgba(241,226,166,0.85)',
+              'rgba(241,226,166,0.85)',
+              'rgba(241,226,166,0.85)',
+              'rgba(241,226,166,0.85)',
+              'rgba(241,226,166,0.85)',
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      //mise en plac pour les priorités
+      var myChart4 = new Chart(ctx4, {
+        type: 'polarArea',
+        data: {
+          labels: ['Urgent', 'Peu Urgent', 'Pas Urgent',],
+          datasets: [{
+            label: "Priorité des demandes",
+            data: [{{ prioriteData[0] }},{{ prioriteData[1] }},{{ prioriteData[2] }}],
+            backgroundColor: [
+              'rgba(103,81,229,0.27)',
+              'rgba(86,113,82,0.27)',
+              'rgba(113,227,190,0.27)',
+            ],
+            borderColor: [
+              'rgba(241,226,166,0.85)',
+              'rgba(241,226,166,0.85)',
+              'rgba(241,226,166,0.85)',
+            ]
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", chart1);
+
+  </script>
+{% endblock %}
 
 {% block body %}
   {% include "layouts/_nav.html.twig" %}
   <div class="container mt-4 mb-4">
     <h3 style="text-align:center">Statistiques sur les demandes</h3>
     <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
-      {{ render_chart(chart) }}
+      <canvas id="myChart1"></canvas>
       <p class="statText mt-2">Statut des demandes</p>
     </div>
     <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
-      {{ render_chart(chart2) }}
+      <canvas id="myChart2"></canvas>
       <p class="statText mt-2">Cause de défaillance des démandes</p>
     </div>
     <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
-      {{ render_chart(chart3) }}
+      <canvas id="myChart3"></canvas>
+      <p class="statText mt-2">Types de défaillance</p>
+    </div>
+    <div style="margin-right:auto; margin-left:auto" class="col-10 mt-4">
+      <canvas id="myChart4"></canvas>
       <p class="statText mt-2">Priorité des demandes</p>
     </div>
+
   </div>
 {% endblock %}
