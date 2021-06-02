@@ -8,6 +8,7 @@ use Flasher\Prime\FlasherInterface;
 use App\Form\DemandeInterventionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Message;
@@ -16,6 +17,7 @@ use App\Repository\AgentMaintenanceRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\DemandeInterventionRepository;
+use Symfony\Component\Security\Core\User\User;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,69 +36,90 @@ class AskManagementController extends AbstractController
 
     /**
      *
-     *
      * @Route("/list", name="_list")
      * 
      */
     public function listAsk(Security $security, Request $request, DemandeInterventionRepository $askRepository, AgentMaintenanceRepository $agentRepository, EntityManagerInterface $em): Response
     {
-        $demandes = [];
-        //Agent for this specific pole
-        $agents = null;
-        //Contains all available agent on a specific request
-        $agentsAvailable = array();
+        if ($this->isGranted($this::ROLE_AGENT) or $this->isGranted($this::ROLE_CHEF_POLE) or $this->isGranted($this::ROLE_CHEF_SERVICE)){
+            $demandes = [];
+            //Agent for this specific pole
+            $agents = null;
+            //Contains all available agent on a specific request
+            $agentsAvailable = array();
 
-        $chef = $security->getUser();
-        if ($this->isGranted($this::ROLE_CHEF_POLE)) {
-            $monPole = $chef->getMonPole();
-            $demandes = $askRepository->findByPoleConcerne($monPole);
-            $agents = $agentRepository->findByPole($monPole);
+            $chef = $security->getUser();
+            if ($this->isGranted($this::ROLE_CHEF_POLE)) {
+                $monPole = $chef->getMonPole();
+                $demandes = $askRepository->findByPoleConcerne($monPole);
+                $agents = $agentRepository->findByPole($monPole);
 
-            // For each , we assign available agent on the pole
-            foreach ($demandes as $demande) {
-                $agentsAvailable[$demande->getId()]= array();
-                //verifions si un agent traite la demande 
-                foreach ($agents as $agent) {
-                    //vérifier si l'agent is in $demande->getTraiteursDemande()
-                    if (!$demande->getTraiteursDemande()->contains($agent)) {
-                        array_push($agentsAvailable[$demande->getId()],$agent);
+                // For each , we assign available agent on the pole
+                foreach ($demandes as $demande) {
+                    $agentsAvailable[$demande->getId()]= array();
+                    //verifions si un agent traite la demande
+                    foreach ($agents as $agent) {
+                        //vérifier si l'agent is in $demande->getTraiteursDemande()
+                        if (!$demande->getTraiteursDemande()->contains($agent)) {
+                            array_push($agentsAvailable[$demande->getId()],$agent);
+                        }
                     }
                 }
+            } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
+                $demandes = $askRepository->findAll();
             }
-        } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
-            $demandes = $askRepository->findAll();
+            elseif ($this->isGranted($this::ROLE_AGENT)){
+                //liste des interventions pour l'agent en cours.
+                dump($chef);
+                //creonsl a méthode dans le repository
+                $demandes = $em->createQuery('SELECT b from App\Entity\DemandeIntervention b inner join b.traiteursDemande a')->getResult();
+            }
+            return $this->render('ask_management/listDemandes.html.twig', [
+                'demandes' => $demandes,
+                'agents' => $agentsAvailable
+            ]);
         }
-        elseif ($this->isGranted($this::ROLE_AGENT)){
-            //liste des interventions pour l'agent en cours.
-            dump($chef);
-            //creonsl a méthode dans le repository
-            $demandes = $em->createQuery('SELECT b from App\Entity\DemandeIntervention b inner join b.traiteursDemande a')->getResult();
+        else{
+            return $this->redirectToRoute('app_login');
         }
-        return $this->render('ask_management/listDemandes.html.twig', [
-            'demandes' => $demandes,
-            'agents' => $agentsAvailable
-        ]);
+
     }
 
     /**
+     * @IsGranted("ROLE_AGENT")
      * @Route("/manage/{id<\d+>}", name="_manage")
-     * @param DemandeIntervention $demandeIntervention
+     * @param DemandeIntervention $demande
      * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param FlasherInterface $flasher
+     * @param MailerInterface $mailer
      * @return Response
+     * @throws TransportExceptionInterface
      */
-    public function gererDemande(DemandeIntervention $demandeIntervention, Request $request, EntityManagerInterface $em): Response
+    public function gererDemande(DemandeIntervention $demande, Request $request, EntityManagerInterface $em, FlasherInterface $flasher, MailerInterface $mailer): Response
     {
-        $form = $this->createForm(DemandeInterventionType::class, $demandeIntervention);
+        $form = $this->createForm(DemandeInterventionType::class, $demande);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $em->flush();
+            $demande->setStatut(StatutType::OK);
+            $em->flush();
+            $flasher->addInfo("Intervention terminée!!");
+            $mail = (new Email())
+                ->from('kassamagan5@gmail.com')
+                ->to('' . $demande->getEmailDemandeur())
+                ->subject('Mise à jour demande Intervention')
+                ->html("<h1>Mise à jour de la demande</h1>
+<p>Votre demande d'intervention à propos de ". $demande->getPoleConcerne()->getNomPole() ." au niveau de ".$demande->getDepartement()." a été traitée.</p>");
+
+            $mailer->send($mail);
 
             //mettre ici le message flash assurant.
             return $this->redirectToRoute('app_ask_list');
         }
 
         return $this->render('ask_management/mangeOne.html.twig', [
-            'demande' => $demandeIntervention,
+            'demande' => $demande,
             'form' => $form->createView()
         ]);
     }
@@ -113,8 +136,8 @@ class AskManagementController extends AbstractController
         $flasher->addInfo("L'intervention est desormais en cours");
 
         $mail = (new Email())
-            ->from('' . $demande->getEmailDemandeur())
-            ->to('kassamagan5@gmail.com')
+            ->from('kassamagan5@gmail.com')
+            ->to(''.$demande->getEmailDemandeur())
             ->subject('Mise à jour demande Intervention')
             ->html("<h1>Mise à jour de la demande</h1>
 <p>Votre demande d'intervention à propos de ". $demande->getPoleConcerne()->getNomPole() ." au niveau de ".$demande->getDepartement()." est en cours de traitement</p>");
@@ -126,27 +149,27 @@ class AskManagementController extends AbstractController
         ]);
     }
 
-    /**
-     * @param DemandeIntervention $demande
-     * @param EntityManagerInterface $em
-     * @return Response
-     * @Route("/end/{id<\d+>}", name="_end")
-     */
-    public function endIntervention(DemandeIntervention $demande, MailerInterface $mailer, EntityManagerInterface $em, FlasherInterface $flasher):Response
-    {
-        $demande->setStatut(StatutType::OK);
-        $em->flush();
-        $flasher->addInfo("Intervention terminée!!");
-        $mail = (new Email())
-            ->from('' . $demande->getEmailDemandeur())
-            ->to('kassamagan5@gmail.com')
-            ->subject('Mise à jour demande Intervention')
-            ->html("<h1>Mise à jour de la demande</h1>
-<p>Votre demande d'intervention à propos de ". $demande->getPoleConcerne()->getNomPole() ." au niveau de ".$demande->getDepartement()." a été traitée.</p>");
-
-        $mailer->send($mail);
-        return $this->redirectToRoute('app_ask_list');
-    }
+//    /**
+//     * @param DemandeIntervention $demande
+//     * @param EntityManagerInterface $em
+//     * @return Response
+//     * @Route("/end/{id<\d+>}", name="_end")
+//     */
+//    public function endIntervention(DemandeIntervention $demande, MailerInterface $mailer, EntityManagerInterface $em, FlasherInterface $flasher):Response
+//    {
+//        $demande->setStatut(StatutType::OK);
+//        $em->flush();
+//        $flasher->addInfo("Intervention terminée!!");
+//        $mail = (new Email())
+//            ->from('kassamagan5@gmail.com')
+//            ->to('' . $demande->getEmailDemandeur())
+//            ->subject('Mise à jour demande Intervention')
+//            ->html("<h1>Mise à jour de la demande</h1>
+//<p>Votre demande d'intervention à propos de ". $demande->getPoleConcerne()->getNomPole() ." au niveau de ".$demande->getDepartement()." a été traitée.</p>");
+//
+//        $mailer->send($mail);
+//        return $this->redirectToRoute('app_ask_list');
+//    }
 
     /**
      * 
