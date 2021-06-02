@@ -66,7 +66,14 @@ class UserFixtures extends Fixture
         $chefPole2->setEmail("faye@esp.sn");
         $chefPole2->setMonPole($pole2);
 
-        
+        $chefPole3 = new ChefPole;
+
+        $chefPole3->setNom("Dupont");
+        $chefPole3->setPrenom("Anne");
+        $chefPole3->setRoles([$this::ROLE_CHEF,$this::ROLE_CHEF_POLE]);
+        $chefPole3->setPassword($this->encoder->encodePassword($chefPole3,"toto"));
+        $chefPole3->setEmail("anne@esp.sn");
+        $chefPole3->setMonPole($pole4);
 
         $agent1 = new AgentMaintenance;
 
@@ -114,6 +121,7 @@ class UserFixtures extends Fixture
         $manager->persist($chefService);
         $manager->persist($chefPole1);
         $manager->persist($chefPole2);
+        $manager->persist($chefPole3);
         $manager->persist($pole1);
         $manager->persist($pole2);
         $manager->persist($pole3);

@@ -22,7 +22,7 @@ class DemandeInterventionRepository extends ServiceEntityRepository
     }
 
 
-    public function findAskBySearch(SearchAsk $searchAsk)
+    public function findAskBySearch(SearchAsk $searchAsk,int $agent = null)
     {
         $qb = $this->createQueryBuilder('d');
         if ($searchAsk->getTypeDefaillance()) {
@@ -39,7 +39,10 @@ class DemandeInterventionRepository extends ServiceEntityRepository
             $qb->andWhere('d.priorite = :prioriteDemande')
                 ->setParameter('prioriteDemande', $searchAsk->getPrioriteDemande());
         }
-        
+        if ($agent) {
+            $qb->andWhere(':agent MEMBER OF d.traiteursDemande')
+            ->setParameter('agent',$agent);
+        }
         return $qb->getQuery();
     }
 

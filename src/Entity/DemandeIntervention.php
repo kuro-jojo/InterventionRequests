@@ -112,6 +112,16 @@ class DemandeIntervention
      */
     private $statut;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateIntervention;
+
+    /**
+     * @ORM\Column(type="time", nullable=true)
+     */
+    private $dureeIntervention;
+
     public function __construct()
     {
         $this->responsables = new ArrayCollection();
@@ -322,6 +332,30 @@ class DemandeIntervention
     public function setStatut($statut): self
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getDateIntervention(): ?\DateTimeInterface
+    {
+        return $this->dateIntervention;
+    }
+
+    public function setDateIntervention(?\DateTimeInterface $dateIntervention): self
+    {
+        $this->dateIntervention = $dateIntervention;
+
+        return $this;
+    }
+
+    public function getDureeIntervention(): ?\DateTimeInterface
+    {
+        return $this->dureeIntervention;
+    }
+
+    public function setDureeIntervention(?\DateTimeInterface $dureeIntervention): self
+    {
+        $this->dureeIntervention = $dureeIntervention;
 
         return $this;
     }

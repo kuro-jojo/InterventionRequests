@@ -20,8 +20,9 @@
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
 		<style>
-
-			
+			#flasher-container-top-right {
+				top: 10% !important;
+			}
 		</style>
 
 
@@ -30,7 +31,7 @@
 		{% endblock %}
 	</head>
 	<body class="d-flex flex-column h-100">
-	{{flasher_render()}}
+		{{flasher_render()}}
 
 		<!-- Flashy depends on jQuery -->
 		<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>

@@ -5,12 +5,14 @@ namespace App\Controller\Admin;
 use App\Entity\SearchAsk;
 use App\DBAL\Types\StatutType;
 use App\Form\SearchAskFormType;
+use Symfony\Component\Mime\Email;
 use App\Service\InterventionCount;
 use App\Entity\DemandeIntervention;
 use Flasher\Prime\FlasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\AgentMaintenanceRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\DemandeInterventionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Form\DemandeInterventionType;
 
 /**
  * @Route("/ask",name="app_ask")
@@ -29,15 +32,22 @@ class AskManagementController extends AbstractController
 
     private const ROLE_CHEF_POLE = 'ROLE_CHEF_POLE';
     private const ROLE_CHEF_SERVICE = 'ROLE_CHEF_SERVICE';
+    public const ROLE_AGENT = 'ROLE_AGENT';
 
     private $agentRepository;
+    private $flasher;
+    private $em;
+    private $mailer;
 
-    public function __construct(AgentMaintenanceRepository $agentRepository)
+    public function __construct(AgentMaintenanceRepository $agentRepository, FlasherInterface $flasher, EntityManagerInterface $em, MailerInterface $mailer)
     {
         $this->agentRepository = $agentRepository;
+        $this->flasher = $flasher;
+        $this->em = $em;
+        $this->mailer = $mailer;
     }
     /**
-     * @IsGranted("ROLE_CHEF")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @Route("/list/{status}", name="_list")
      * 
      */
@@ -68,14 +78,18 @@ class AskManagementController extends AbstractController
                 }
                 $agentsOfAsk[$demande->getId()] = array();
                 // Liste des agents de cette intervention
-                array_push($agentsOfAsk[$demande->getId()],$demande->getTraiteursDemande());
+                array_push($agentsOfAsk[$demande->getId()], $demande->getTraiteursDemande());
             }
         } elseif ($this->isGranted($this::ROLE_CHEF_SERVICE)) {
             $demandes = $askRepository->findAll();
+        } elseif ($this->isGranted($this::ROLE_AGENT)) {
+            //liste des interventions pour l'agent en cours.
+            //creonsl a méthode dans le repository
+            $demandes = $this->em->createQuery('SELECT b from App\Entity\DemandeIntervention b inner join b.traiteursDemande a')->getResult();
         }
 
-  
-        
+
+
         // filtrage
         $searchAsk = new SearchAsk;
         $form = $this->createForm(SearchAskFormType::class, $searchAsk);
@@ -87,7 +101,7 @@ class AskManagementController extends AbstractController
             }
 
             $demandes = $paginator->paginate(
-                $askRepository->findAskBySearch($searchAsk),
+                $askRepository->findAskBySearch($searchAsk, $this->isGranted($this::ROLE_AGENT) ? $this->getUser()->getId() : null),
                 $request->query->getInt('page', 1),
                 15
             );
@@ -109,7 +123,7 @@ class AskManagementController extends AbstractController
             'demandes' => $demandes,
             'agents' => $agentsAvailable,
             'form' => $form->createView(),
-            'agentsOfAsk'=>$agentsOfAsk,
+            'agentsOfAsk' => $agentsOfAsk,
             'status' => $status,
 
             'numberOfInterventions' => $numberOfInterventions,
@@ -123,19 +137,81 @@ class AskManagementController extends AbstractController
      * 
      * @Route("/assign/{id<\d+>}", name="_assign")
      */
-    public function assignAsk(DemandeIntervention $demande, Request $request, EntityManagerInterface $em, FlasherInterface $flasher): Response
+    public function assignAsk(DemandeIntervention $demande, Request $request, EntityManagerInterface $em,): Response
     {
         $agentIds = $request->request->all();
         foreach ($agentIds as $id) {
             $demande->addTraiteursDemande($this->agentRepository->find($id));
         }
-        if ($demande->getStatut() != StatutType::EN_COURS) {
-            $demande->setStatut(StatutType::EN_COURS);
-        }
-        $flasher->addInfo("L'intervention a bien été assignée!!!");
+
+        $this->flasher->addInfo("L'intervention a bien été assignée!!!");
         $em->flush();
         return $this->redirectToRoute('app_ask_list');
     }
+
+
+
+    /**
+     * @IsGranted("ROLE_AGENT")
+     * @Route("/manage/{id<\d+>}", name="_manage")
+     * @param DemandeIntervention $demandeIntervention
+     * @param Request $request
+     * @return Response
+     */
+    public function gererDemande(DemandeIntervention $demande, Request $request): Response
+    {
+       
+        $form = $this->createForm(DemandeInterventionType::class, $demande);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+            $demande->setStatut(StatutType::OK);
+            $this->em->flush();
+            $this->flasher->addInfo("Intervention terminée!!");
+            $mail = (new Email())
+                ->from('kassamagan5@gmail.com')
+                ->to($demande->getEmailDemandeur())
+                ->subject('Mise à jour demande Intervention')
+                ->html("<h1>Mise à jour de la demande</h1>
+<p>Votre demande d'intervention à propos de <b>" . $demande->getPoleConcerne()->getNomPole() . "</b> au niveau de " . $demande->getDepartement() . " a été traitée.</p>");
+
+            $this->mailer->send($mail);
+
+            //mettre ici le message flash assurant.
+            return $this->redirectToRoute('app_ask_list');
+        }
+
+        return $this->render('admin/ask_management/manageOne.html.twig', [
+            'demande' => $demande,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/manage/begin/{id<\d+>}", name="_manage_begin")
+     */
+    public function beginIntervention(DemandeIntervention $demande, Request $request, DemandeInterventionRepository $repo,): Response
+    {
+        $demande->setStatut(StatutType::EN_COURS);
+        $demande->setDateIntervention(new \DateTime('now'));
+        $id = $demande->getId();
+        $this->em->flush();
+        $this->flasher->addInfo("L'intervention est desormais en cours");
+
+        $mail = (new Email())
+            ->from('kassamagan5@gmail.com')
+            ->to($demande->getEmailDemandeur())
+            ->subject('Mise à jour demande Intervention')
+            ->html("<h1>Mise à jour de la demande</h1>
+<p>Votre demande d'intervention à propos de " . $demande->getPoleConcerne()->getNomPole() . " au niveau de " . $demande->getDepartement() . " est en cours de traitement</p>");
+
+        $this->mailer->send($mail);
+
+        return $this->redirectToRoute('app_ask_manage', [
+            'id' => $id,
+        ]);
+    }
+
 
     //affichage des statistiques
 
@@ -143,7 +219,7 @@ class AskManagementController extends AbstractController
      * @IsGranted("ROLE_CHEF_SERVICE")
      * @Route("/stat", name="_stat")
      */
-    public function statistique(EntityManagerInterface $em,InterventionCount $interventionCount): Response
+    public function statistique(EntityManagerInterface $em, InterventionCount $interventionCount): Response
     {
 
         //recuperation pour les statuts

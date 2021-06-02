@@ -2,16 +2,17 @@
 
 namespace App\Form;
 
-use App\DBAL\Types\CauseDefaillanceType;
-use App\DBAL\Types\DepartementType;
-use App\DBAL\Types\Priorite;
-use App\Entity\DemandeIntervention;
 use App\Entity\Pole;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\DBAL\Types\Priorite;
+use App\DBAL\Types\DepartementType;
+use App\Entity\DemandeIntervention;
+use App\DBAL\Types\CauseDefaillanceType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -25,7 +26,7 @@ class DemandeInterventionType extends AbstractType
             'label' => $label,
             'attr' => [
                 'placeholder' => $placeholder,
-            ]
+            ],
         ], $options);
     }
 
@@ -39,37 +40,41 @@ class DemandeInterventionType extends AbstractType
             ->add('description', TextareaType::class, $this->getConfiguration('', 'Saisissez, si possible, une brève description de votre problème'))
             ->add('priorite', ChoiceType::class, $this->getConfiguration('', '', [
                 'choices' => Priorite::getChoices(),
-                'attr'=>[
-                    'class'=>'form-select'
+                'attr' => [
+                    'class' => 'form-select'
                 ]
             ]))
             ->add('departement', ChoiceType::class, $this->getConfiguration('department', '', [
                 'choices' => DepartementType::getChoices(),
-                'attr'=>[
-                    'class'=>'form-select'
+                'attr' => [
+                    'class' => 'form-select'
                 ]
             ]))
             ->add('causeDefaillance', ChoiceType::class, $this->getConfiguration('Cause défaillance', '', [
                 'choices' => CauseDefaillanceType::getChoices(),
-                'attr'=>[
-                    'class'=>'form-select'
+                'attr' => [
+                    'class' => 'form-select'
                 ],
-                'help'=>'Si connue, indiquer la cause la défaillance'
+                'help' => 'Si connue, indiquer la cause la défaillance'
             ]))
             ->add('poleConcerne', EntityType::class, $this->getConfiguration('Type de défaillance', '', [
                 'class' => Pole::class,
                 'choice_label' => 'nomPole',
                 'multiple' => false,
-                'attr'=>[
-                    'class'=>'form-select'
+                'attr' => [
+                    'class' => 'form-select'
                 ]
+            ]))
+            ->add('dureeIntervention', TimeType::class, $this->getConfiguration('dureeIntervention', 'HH:MM', [
+                'input' => 'datetime',
+                'widget' => "single_text"
             ]));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => DemandeIntervention::class, 
+            'data_class' => DemandeIntervention::class,
             'attr' => [
                 'novalidate' => 'novalidate'
             ]
