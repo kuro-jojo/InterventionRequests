@@ -8,7 +8,7 @@
 
 		<nav class="mt-5">
 			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-				
+
 				<li class="nav-item">
 					<a href="{{path('app_admin')}}" class="nav-link">
 						<i class="nav-icon fas fa-home"></i>
@@ -60,15 +60,17 @@
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item">
-					<a href="{{path('app_ask_stat')}}" class="nav-link">
-						<i class="nav-icon fas fa-chart-pie"></i>
-						<p>
-							Statistiques
-						</p>
-					</a>
+				{% if is_granted("ROLE_CHEF") %}
+					<li class="nav-item">
+						<a href="{{path('app_ask_stat')}}" class="nav-link">
+							<i class="nav-icon fas fa-chart-pie"></i>
+							<p>
+								Statistiques
+							</p>
+						</a>
 
-				</li>
+					</li>
+				{% endif %}
 
 			</ul>
 		</nav>

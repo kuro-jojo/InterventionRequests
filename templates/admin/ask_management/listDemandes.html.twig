@@ -23,15 +23,22 @@
 			margin-top: 2em;
 			border-right: none
 		}
-		/* .assign {
-			visibility: hidden;
-		} */
+		.help {
+			opacity: 0;
+		}
+		.help-on {
+			height: auto;
+		}
+		.help-off {
+			height: 0;
+		}
+		#help {
+			transition: opacity 1s ease-out;
+			overflow: hidden;
+		}
 	</style>
 {% endblock %}
 
-{% block javascripts %}
-	{{parent()}}
-{% endblock %}
 {% block body %}
 
 	{% set service = "" %}
@@ -44,25 +51,43 @@
 	<div class="content-wrapper">
 		<h1 class="text-center">Liste des demandes</h1>
 		{% if status is null %}
-		<section class="content mt-5">
-			{{form_start(form)}}
-			<div class="row justify-content-end">
+			<section class="content mt-5">
+				{{form_start(form)}}
+				<div class="row justify-content-end">
 
-				<div class="col-md-2">
-					{{ form_widget(form.typeDefaillance)}}
+					<div class="col-md-2">
+						{{ form_widget(form.typeDefaillance)}}
+					</div>
+					<div class="col-md-2">
+						{{ form_widget(form.statutDemande)}}
+					</div>
+					<div class="col-md-2">
+						{{ form_widget(form.prioriteDemande)}}
+					</div>
+					<div class="col-md-3">
+						<button class="btn btn-main" type="submit">Rechercher</button>
+					</div>
 				</div>
-				<div class="col-md-2">
-					{{ form_widget(form.statutDemande)}}
+				{{form_end(form)}}
+				<div class="container text-center mt-3 fs-3" id="helper">
+					<i class="fas fa-info" title="Help"></i>
 				</div>
-				<div class="col-md-2">
-					{{ form_widget(form.prioriteDemande)}}
+				<div class="container help help-off" id="help">
+					<div class="row">
+						<h4 class="fw-bold">Statut de la demande</h4>
+						<div class="col-md-1 text-center m-2 p-2 btn-danger">En attente</div>
+						<div class="col-md-1 text-center m-2 p-2 btn-warning">En cours</div>
+						<div class="col-md-1 text-center m-2 p-2 btn-success">Terminé</div>
+					</div>
+					<div class="row mt-2">
+						<h4 class="fw-bold">Priorité de la demande</h4>
+						<div class="col-md-1 text-center m-2 p-2 btn-danger">Urgente</div>
+						<div class="col-md-2 text-center m-2 p-2 btn-warning">Peu urgente
+						</div>
+						<div class="col-md-1 text-center m-2 p-2 btn-light">Pas urgente</div>
+					</div>
 				</div>
-				<div class="col-md-3">
-					<button class="btn btn-main" type="submit">Rechercher</button>
-				</div>
-			</div>
-			{{form_end(form)}}
-		</section>
+			</section>
 		{% endif %}
 		{% if demandes is not empty %}
 			<div class="table-responsive {{service}} mx-auto">
@@ -80,20 +105,30 @@
 							<th class="header" scope="col">Cause defaillance</th>
 							<th class="header" scope="col">Département ou service</th>
 							{% if is_granted('ROLE_CHEF_POLE') %}
-							<th class="header" scope="col">Actions</th>
+								<th class="header" scope="col">Actions</th>
 							{% endif %}
 						</tr>
 					</thead>
 					<tbody>
 						{% for demande in demandes %}
 							{% set type = 'success' %}
+							{% set typeP = 'danger' %}
 
 							{% if demande.statut == 'EN_ATTENTE' %}
 								{% set type = 'danger' %}
 							{% elseif demande.statut == 'EN_COURS' %}
 								{% set type = 'warning' %}
 							{% endif %}
-							<tr>
+
+							{% if demande.priorite == 'PeuUrgent' %}
+								{% set typeP = 'warning' %}
+							{% elseif demande.priorite == 'PasUrgent' %}
+								{% set typeP = 'light' %}
+							{% endif %}
+							<form action="{{path('app_ask_manage',{id:demande.id})}}" id="form-agent-{{demande.id}}" method="post"></form>
+							{% if is_granted("ROLE_AGENT") %}
+								<tr onclick="document.getElementById('form-agent-{{demande.id}}').submit();" style="cursor:pointer">
+								{% endif %}
 
 								<td class="body btn-{{type}} m-2 text-white fw-bold">{{ demande.statut|readable_enum}}</td>
 								<td class="body fw-bold">{{ demande.id}}</td>
@@ -102,7 +137,7 @@
 								<td class="body">{{ demande.contactDemandeur}}</td>
 								<td class="body">{{ demande.fonction}}</td>
 								<td class="body">{{ demande.poleConcerne.nomPole}}</td>
-								<td class="body">{{ demande.priorite | readable_enum}}</td>
+								<td class="body btn-{{typeP}}">{{ demande.priorite | readable_enum}}</td>
 								<td class="body">{{ demande.causeDefaillance | readable_enum }}</td>
 								<td class="body">{{ demande.departement | readable_enum }}</td>
 								{% if is_granted('ROLE_CHEF_POLE') %}
@@ -196,4 +231,19 @@
 		{% endif %}
 
 	</div>
+	<script>
+
+		var helper = document.getElementById('helper');
+helper.addEventListener('click', function () {
+
+var help = document.getElementById('help');
+if (help.classList.contains("help-off")) {
+help.classList.add("help-on");
+help.classList.remove("help-off");
+} else {
+help.classList.add("help-off");
+help.classList.remove("help-on");
+} help.classList.toggle("help");
+})
+	</script>
 {% endblock %}

@@ -101,7 +101,8 @@
 			<div class="mt-5 d-grid gap-2 col-6 mx-auto">
 				<button type="submit" class="btn btn-outline-main">Envoyer la demande</button>
 			</div>
-			{{ form_end(form) }}
+			{{ form_widget(form._token) }}
+			{{ form_end(form, {'render_rest': false}) }}
 		</div>
 	</div>
 {% endblock %}
